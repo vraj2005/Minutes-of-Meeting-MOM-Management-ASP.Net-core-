@@ -1,0 +1,107 @@
+@model MOM_Project.Models.Staff
+
+<div class="pagetitle">
+    <h1>Add Staff Member</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Staff" asp-action="Index">Staff Members</a></li>
+            <li class="breadcrumb-item active">Create</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Staff Member Form</h5>
+
+                    <form method="post" class="row g-3">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <div class="col-12">
+                            <label for="StaffName" class="form-label">Staff Name</label>
+                            <input asp-for="StaffName" type="text" class="form-control" id="StaffName" required>
+                            <span asp-validation-for="StaffName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="DepartmentID" class="form-label">Department ID</label>
+                            <input asp-for="DepartmentID" type="number" class="form-control" id="DepartmentID" required>
+                            <span asp-validation-for="DepartmentID" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="MobileNo" class="form-label">Mobile No</label>
+                            <input asp-for="MobileNo" type="text" class="form-control" id="MobileNo" required>
+                            <span asp-validation-for="MobileNo" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="EmailAddress" class="form-label">Email Address</label>
+                            <input asp-for="EmailAddress" type="email" class="form-control" id="EmailAddress" required>
+                            <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="Remarks" class="form-label">Remarks</label>
+                            <textarea asp-for="Remarks" class="form-control" id="Remarks" rows="3"></textarea>
+                            <span asp-validation-for="Remarks" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Create
+                            </button>
+                            <a asp-controller="Staff" asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .form-label {
+        font-weight: 600;
+        color: #012970;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px 12px;
+    }
+
+    .form-control:focus {
+        border-color: #4154f1;
+        box-shadow: 0 0 0 0.2rem rgba(65, 84, 241, 0.25);
+    }
+
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+
+    .btn-primary:hover {
+        background-color: #3144d9;
+        border-color: #2836c0;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+</style>

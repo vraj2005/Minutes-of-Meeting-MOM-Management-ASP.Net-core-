@@ -1,0 +1,376 @@
+﻿@model IEnumerable<MOM_Project.Models.Meeting>
+
+@{
+    ViewData["Title"] = "Meetings";
+}
+
+<div class="pagetitle">
+    <h1>Meetings</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item">Meeting Management</li>
+            <li class="breadcrumb-item active">All Meetings</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Meetings List</h5>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMeetingModal">
+                            <i class="bi bi-plus-circle"></i> Schedule Meeting
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover datatable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 60px;"><b>#</b></th>
+                                    <th><b>Meeting Description</b></th>
+                                    <th class="text-center"><b>Date & Time</b></th>
+                                    <th><b>Venue</b></th>
+                                    <th><b>Type</b></th>
+                                    <th><b>Department</b></th>
+                                    <th class="text-center"><b>Status</b></th>
+                                    <th class="text-center" style="width: 120px;"><b>Actions</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="text-center fw-bold">@item.MeetingID</td>
+                                        <td><span class="fw-500">@item.MeetingDescription</span></td>
+                                        <td class="text-center">@item.MeetingDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>@item.MeetingVenueID</td>
+                                        <td>@item.MeetingTypeID</td>
+                                        <td>@item.DepartmentID</td>
+                                        <td class="text-center">
+                                            <span class="badge @(item.Status == "Scheduled" ? "bg-success" : "bg-warning")">@item.Status</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingModal" onclick="editMeeting(@item.MeetingID, '@item.MeetingDescription', '@item.MeetingDate.ToString("yyyy-MM-ddTHH:mm")', @item.MeetingVenueID, @item.MeetingTypeID, @item.DepartmentID, '@item.DocumentPath')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingModal" onclick="deleteMeeting(@item.MeetingID, '@item.MeetingDescription')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Meeting Modal -->
+<div class="modal fade" id="addMeetingModal" tabindex="-1" aria-labelledby="addMeetingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addMeetingModalLabel"><i class="bi bi-calendar-plus me-2"></i>Schedule New Meeting</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addMeetingForm">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="meetingDescription" class="form-label">Meeting Description <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="meetingDescription" placeholder="Enter meeting description" required>
+                            <div class="invalid-feedback">Please enter meeting description.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="meetingDate" class="form-label">Date & Time <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="meetingDate" required>
+                            <div class="invalid-feedback">Please select date and time.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="meetingVenueId" class="form-label">Venue <span class="text-danger">*</span></label>
+                            <select class="form-select" id="meetingVenueId" required>
+                                <option value="">Select Venue</option>
+                                <option value="1">Conference Room A</option>
+                                <option value="2">Conference Room B</option>
+                                <option value="3">Board Room</option>
+                                <option value="4">Main Auditorium</option>
+                                <option value="5">Training Room</option>
+                                <option value="6">Virtual Meeting Room</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a venue.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="meetingTypeId" class="form-label">Meeting Type <span class="text-danger">*</span></label>
+                            <select class="form-select" id="meetingTypeId" required>
+                                <option value="">Select Meeting Type</option>
+                                <option value="1">Regular Meeting</option>
+                                <option value="2">Board Meeting</option>
+                                <option value="3">Project Review</option>
+                                <option value="4">Town Hall</option>
+                                <option value="5">Training Session</option>
+                            </select>
+                            <div class="invalid-feedback">Please select meeting type.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="meetingDepartmentId" class="form-label">Department <span class="text-danger">*</span></label>
+                            <select class="form-select" id="meetingDepartmentId" required>
+                                <option value="">Select Department</option>
+                                <option value="1">Human Resources</option>
+                                <option value="2">Finance</option>
+                                <option value="3">Information Technology</option>
+                                <option value="4">Operations</option>
+                                <option value="5">Marketing</option>
+                            </select>
+                            <div class="invalid-feedback">Please select department.</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentPath" class="form-label">Document Path</label>
+                        <input type="text" class="form-control" id="documentPath" placeholder="Enter document path (optional)">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" onclick="saveMeeting()">
+                    <i class="bi bi-check-circle me-1"></i>Schedule
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Meeting Modal -->
+<div class="modal fade" id="editMeetingModal" tabindex="-1" aria-labelledby="editMeetingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editMeetingModalLabel"><i class="bi bi-pencil me-2"></i>Edit Meeting</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editMeetingForm">
+                    <input type="hidden" id="editMeetingId">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="editMeetingDescription" class="form-label">Meeting Description <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editMeetingDescription" placeholder="Enter meeting description" required>
+                            <div class="invalid-feedback">Please enter meeting description.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editMeetingDate" class="form-label">Date & Time <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="editMeetingDate" required>
+                            <div class="invalid-feedback">Please select date and time.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editMeetingVenueId" class="form-label">Venue <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editMeetingVenueId" required>
+                                <option value="">Select Venue</option>
+                                <option value="1">Conference Room A</option>
+                                <option value="2">Conference Room B</option>
+                                <option value="3">Board Room</option>
+                                <option value="4">Main Auditorium</option>
+                                <option value="5">Training Room</option>
+                                <option value="6">Virtual Meeting Room</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a venue.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editMeetingTypeId" class="form-label">Meeting Type <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editMeetingTypeId" required>
+                                <option value="">Select Meeting Type</option>
+                                <option value="1">Regular Meeting</option>
+                                <option value="2">Board Meeting</option>
+                                <option value="3">Project Review</option>
+                                <option value="4">Town Hall</option>
+                                <option value="5">Training Session</option>
+                            </select>
+                            <div class="invalid-feedback">Please select meeting type.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editMeetingDepartmentId" class="form-label">Department <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editMeetingDepartmentId" required>
+                                <option value="">Select Department</option>
+                                <option value="1">Human Resources</option>
+                                <option value="2">Finance</option>
+                                <option value="3">Information Technology</option>
+                                <option value="4">Operations</option>
+                                <option value="5">Marketing</option>
+                            </select>
+                            <div class="invalid-feedback">Please select department.</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDocumentPath" class="form-label">Document Path</label>
+                        <input type="text" class="form-control" id="editDocumentPath" placeholder="Enter document path (optional)">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-info" onclick="updateMeeting()">
+                    <i class="bi bi-check-circle me-1"></i>Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Meeting Modal -->
+<div class="modal fade" id="deleteMeetingModal" tabindex="-1" aria-labelledby="deleteMeetingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteMeetingModalLabel"><i class="bi bi-trash me-2"></i>Delete Meeting</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="deleteMeetingId">
+                <p class="mb-0">Are you sure you want to delete the meeting: <strong id="deleteMeetingName"></strong>?</p>
+                <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteMeeting()">
+                    <i class="bi bi-trash me-1"></i>Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        background-color: #f6f9ff;
+        color: #012970;
+        font-weight: 600;
+        border-bottom: 2px solid #ebeef4;
+        padding: 15px;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f9fbff;
+        transition: background-color 0.2s ease;
+    }
+
+    .table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ebeef4;
+        vertical-align: middle;
+    }
+
+    .fw-500 {
+        font-weight: 500;
+        color: #012970;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+        color: #fff;
+    }
+
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+
+    .btn-primary:hover {
+        background-color: #3144d9;
+        border-color: #2836c0;
+    }
+
+    .modal-header {
+        border-radius: 0;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #012970;
+    }
+</style>
+
+<script>
+    function editMeeting(id, description, dateTime, venueId, typeId, deptId, docPath) {
+        document.getElementById('editMeetingId').value = id;
+        document.getElementById('editMeetingDescription').value = description;
+        document.getElementById('editMeetingDate').value = dateTime;
+        document.getElementById('editMeetingVenueId').value = venueId;
+        document.getElementById('editMeetingTypeId').value = typeId;
+        document.getElementById('editMeetingDepartmentId').value = deptId;
+        document.getElementById('editDocumentPath').value = docPath;
+    }
+
+    function deleteMeeting(id, name) {
+        document.getElementById('deleteMeetingId').value = id;
+        document.getElementById('deleteMeetingName').textContent = name;
+    }
+
+    function saveMeeting() {
+        var description = document.getElementById('meetingDescription').value;
+        var date = document.getElementById('meetingDate').value;
+        var venue = document.getElementById('meetingVenueId').value;
+        var type = document.getElementById('meetingTypeId').value;
+        var dept = document.getElementById('meetingDepartmentId').value;
+        
+        var isValid = true;
+        if (description.trim() === '') { document.getElementById('meetingDescription').classList.add('is-invalid'); isValid = false; }
+        if (date === '') { document.getElementById('meetingDate').classList.add('is-invalid'); isValid = false; }
+        if (venue === '') { document.getElementById('meetingVenueId').classList.add('is-invalid'); isValid = false; }
+        if (type === '') { document.getElementById('meetingTypeId').classList.add('is-invalid'); isValid = false; }
+        if (dept === '') { document.getElementById('meetingDepartmentId').classList.add('is-invalid'); isValid = false; }
+        
+        if (!isValid) return;
+        
+        alert('Meeting "' + description + '" scheduled successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('addMeetingModal'));
+        modal.hide();
+        document.getElementById('addMeetingForm').reset();
+    }
+
+    function updateMeeting() {
+        var description = document.getElementById('editMeetingDescription').value;
+        if (description.trim() === '') {
+            document.getElementById('editMeetingDescription').classList.add('is-invalid');
+            return;
+        }
+        alert('Meeting updated successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('editMeetingModal'));
+        modal.hide();
+    }
+
+    function confirmDeleteMeeting() {
+        var name = document.getElementById('deleteMeetingName').textContent;
+        alert('Meeting "' + name + '" deleted successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('deleteMeetingModal'));
+        modal.hide();
+    }
+</script>

@@ -1,0 +1,342 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section dashboard">
+    <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-8">
+            <div class="row">
+
+                <!-- Total Meetings Card -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card sales-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Meetings <span>| This Month</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-calendar-event"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>24</h6>
+                                    <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End Total Meetings Card -->
+
+                <!-- Staff Members Card -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card revenue-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Staff Members <span>| Total</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>156</h6>
+                                    <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End Staff Members Card -->
+
+                <!-- Departments Card -->
+                <div class="col-xxl-4 col-xl-12">
+                    <div class="card info-card customers-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Departments <span>| Active</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-building"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>12</h6>
+                                    <span class="text-muted small pt-2 ps-1">departments</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End Departments Card -->
+
+                <!-- Upcoming Meetings -->
+                <div class="col-12">
+                    <div class="card recent-sales overflow-auto">
+                        <div class="card-body">
+                            <h5 class="card-title">Upcoming Meetings <span>| This Week</span></h5>
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Meeting Title</th>
+                                        <th scope="col">Date & Time</th>
+                                        <th scope="col">Venue</th>
+                                        <th scope="col">Department</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>Q4 Planning Meeting</td>
+                                        <td>10 Jan 2026, 10:00 AM</td>
+                                        <td>Conference Room A</td>
+                                        <td>Human Resources</td>
+                                        <td><span class="badge bg-success">Scheduled</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2</th>
+                                        <td>Budget Review</td>
+                                        <td>11 Jan 2026, 02:00 PM</td>
+                                        <td>Board Room</td>
+                                        <td>Finance</td>
+                                        <td><span class="badge bg-success">Scheduled</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">3</th>
+                                        <td>Project Status Update</td>
+                                        <td>12 Jan 2026, 11:00 AM</td>
+                                        <td>Conference Room B</td>
+                                        <td>IT Department</td>
+                                        <td><span class="badge bg-warning">Pending</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">4</th>
+                                        <td>Team Building Session</td>
+                                        <td>13 Jan 2026, 03:00 PM</td>
+                                        <td>Main Auditorium</td>
+                                        <td>Operations</td>
+                                        <td><span class="badge bg-success">Scheduled</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">5</th>
+                                        <td>Training Workshop</td>
+                                        <td>14 Jan 2026, 09:00 AM</td>
+                                        <td>Training Room</td>
+                                        <td>Marketing</td>
+                                        <td><span class="badge bg-info">In Progress</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div><!-- End Upcoming Meetings -->
+
+                <!-- Meeting Statistics Chart -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Meeting Statistics <span>| Last 6 Months</span></h5>
+                            <div id="meetingChart"></div>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", () => {
+                                    new ApexCharts(document.querySelector("#meetingChart"), {
+                                        series: [{
+                                            name: 'Meetings Held',
+                                            data: [18, 22, 28, 24, 32, 24],
+                                        }, {
+                                            name: 'Cancelled',
+                                            data: [2, 3, 1, 2, 4, 2]
+                                        }],
+                                        chart: {
+                                            height: 350,
+                                            type: 'bar',
+                                            toolbar: { show: false },
+                                        },
+                                        colors: ['#4154f1', '#ff771d'],
+                                        plotOptions: {
+                                            bar: {
+                                                horizontal: false,
+                                                columnWidth: '55%',
+                                                endingShape: 'rounded'
+                                            },
+                                        },
+                                        dataLabels: { enabled: false },
+                                        stroke: {
+                                            show: true,
+                                            width: 2,
+                                            colors: ['transparent']
+                                        },
+                                        xaxis: {
+                                            categories: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'],
+                                        },
+                                        yaxis: {
+                                            title: { text: 'Number of Meetings' }
+                                        },
+                                        fill: { opacity: 1 },
+                                        tooltip: {
+                                            y: {
+                                                formatter: function(val) {
+                                                    return val + " meetings"
+                                                }
+                                            }
+                                        }
+                                    }).render();
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div><!-- End Meeting Statistics Chart -->
+
+            </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+
+            <!-- Quick Actions Card -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Actions</h5>
+                    <div class="d-grid gap-2">
+                        <a href="/Meetings/Index" class="btn btn-primary">
+                            <i class="bi bi-calendar-plus me-2"></i>Schedule New Meeting
+                        </a>
+                        <a href="/Staff/Index" class="btn btn-success">
+                            <i class="bi bi-person-plus me-2"></i>Add Staff Member
+                        </a>
+                        <a href="/MeetingMember/Index" class="btn btn-info">
+                            <i class="bi bi-clipboard-check me-2"></i>Mark Attendance
+                        </a>
+                        <a href="/Department/Index" class="btn btn-warning">
+                            <i class="bi bi-building me-2"></i>Manage Departments
+                        </a>
+                    </div>
+                </div>
+            </div><!-- End Quick Actions -->
+
+            <!-- Recent Activity -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Recent Activity <span>| Today</span></h5>
+                    <div class="activity">
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">10 min</div>
+                            <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                            <div class="activity-content">
+                                New meeting <a href="#" class="fw-bold text-dark">Q4 Review</a> scheduled
+                            </div>
+                        </div>
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">32 min</div>
+                            <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
+                            <div class="activity-content">
+                                Staff member <a href="#" class="fw-bold text-dark">John Doe</a> added to meeting
+                            </div>
+                        </div>
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">1 hr</div>
+                            <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
+                            <div class="activity-content">
+                                Meeting attendance marked for <a href="#" class="fw-bold text-dark">Budget Review</a>
+                            </div>
+                        </div>
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">2 hrs</div>
+                            <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
+                            <div class="activity-content">
+                                New department <a href="#" class="fw-bold text-dark">Research & Development</a> created
+                            </div>
+                        </div>
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">4 hrs</div>
+                            <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                            <div class="activity-content">
+                                Meeting <a href="#" class="fw-bold text-dark">Team Sync</a> cancelled
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- End Recent Activity -->
+
+            <!-- Meeting Types Distribution -->
+            <div class="card">
+                <div class="card-body pb-0">
+                    <h5 class="card-title">Meeting Types <span>| Distribution</span></h5>
+                    <div id="meetingTypeChart" style="min-height: 300px;" class="echart"></div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                            echarts.init(document.querySelector("#meetingTypeChart")).setOption({
+                                tooltip: { trigger: 'item' },
+                                legend: { top: '5%', left: 'center' },
+                                series: [{
+                                    name: 'Meeting Types',
+                                    type: 'pie',
+                                    radius: ['40%', '70%'],
+                                    avoidLabelOverlap: false,
+                                    label: { show: false, position: 'center' },
+                                    emphasis: {
+                                        label: { show: true, fontSize: '14', fontWeight: 'bold' }
+                                    },
+                                    labelLine: { show: false },
+                                    data: [
+                                        { value: 35, name: 'Regular Meeting' },
+                                        { value: 25, name: 'Board Meeting' },
+                                        { value: 20, name: 'Project Review' },
+                                        { value: 15, name: 'Training' },
+                                        { value: 5, name: 'Town Hall' }
+                                    ]
+                                }]
+                            });
+                        });
+                    </script>
+                </div>
+            </div><!-- End Meeting Types Distribution -->
+
+            <!-- Department-wise Meetings -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Department Meetings <span>| This Month</span></h5>
+                    <div class="progress-stacked mb-3">
+                        <div class="progress" role="progressbar" style="width: 30%">
+                            <div class="progress-bar bg-primary">HR</div>
+                        </div>
+                        <div class="progress" role="progressbar" style="width: 25%">
+                            <div class="progress-bar bg-success">Finance</div>
+                        </div>
+                        <div class="progress" role="progressbar" style="width: 20%">
+                            <div class="progress-bar bg-info">IT</div>
+                        </div>
+                        <div class="progress" role="progressbar" style="width: 25%">
+                            <div class="progress-bar bg-warning">Ops</div>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Human Resources
+                            <span class="badge bg-primary rounded-pill">8</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Finance
+                            <span class="badge bg-success rounded-pill">6</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            IT Department
+                            <span class="badge bg-info rounded-pill">5</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Operations
+                            <span class="badge bg-warning rounded-pill">5</span>
+                        </li>
+                    </ul>
+                </div>
+            </div><!-- End Department-wise Meetings -->
+
+        </div><!-- End Right side columns -->
+
+    </div>
+</section>

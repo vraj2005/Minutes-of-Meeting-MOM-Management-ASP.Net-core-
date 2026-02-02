@@ -1,0 +1,107 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using MOM_Project.Models;
+
+namespace MOM_Project.Controllers
+{
+    public class DepartmentController : Controller
+    {
+        // Static data for demonstration
+        private static List<Department> departments = new List<Department>
+        {
+            new Department { DepartmentID = 1, DepartmentName = "Human Resources", Created = DateTime.Now.AddDays(-10), Modified = DateTime.Now.AddDays(-10) },
+            new Department { DepartmentID = 2, DepartmentName = "Finance", Created = DateTime.Now.AddDays(-8), Modified = DateTime.Now.AddDays(-8) },
+            new Department { DepartmentID = 3, DepartmentName = "Operations", Created = DateTime.Now.AddDays(-5), Modified = DateTime.Now.AddDays(-5) },
+            new Department { DepartmentID = 4, DepartmentName = "Marketing", Created = DateTime.Now.AddDays(-2), Modified = DateTime.Now.AddDays(-2) },
+            new Department { DepartmentID = 5, DepartmentName = "Information Technology", Created = DateTime.Now.AddDays(-1), Modified = DateTime.Now.AddDays(-1) }
+        };
+
+        public IActionResult Index()
+        {
+            return View(departments);
+        }
+
+        public IActionResult Details(int id)
+        {
+            var department = departments.FirstOrDefault(d => d.DepartmentID == id);
+            if (department == null)
+            {
+                return NotFound();
+            }
+            return View(department);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create([Bind("DepartmentName")] Department department)
+        {
+            if (ModelState.IsValid)
+            {
+                department.DepartmentID = departments.Max(d => d.DepartmentID) + 1;
+                department.Created = DateTime.Now;
+                department.Modified = DateTime.Now;
+                departments.Add(department);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(department);
+        }
+
+        public IActionResult Edit(int id)
+        {
+            var department = departments.FirstOrDefault(d => d.DepartmentID == id);
+            if (department == null)
+            {
+                return NotFound();
+            }
+            return View(department);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, [Bind("DepartmentID,DepartmentName,Created")] Department department)
+        {
+            if (id != department.DepartmentID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var existingDept = departments.FirstOrDefault(d => d.DepartmentID == id);
+                if (existingDept != null)
+                {
+                    existingDept.DepartmentName = department.DepartmentName;
+                    existingDept.Modified = DateTime.Now;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(department);
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var department = departments.FirstOrDefault(d => d.DepartmentID == id);
+            if (department == null)
+            {
+                return NotFound();
+            }
+            return View(department);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var department = departments.FirstOrDefault(d => d.DepartmentID == id);
+            if (department != null)
+            {
+                departments.Remove(department);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}

@@ -1,0 +1,133 @@
+﻿@model IEnumerable<MOM_Project.Models.Meeting>
+
+<div class="pagetitle">
+    <h1>Meetings</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item">Meetings</li>
+            <li class="breadcrumb-item active">All Meetings</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Meetings List</h5>
+                        <a asp-controller="Meetings" asp-action="Create" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-circle"></i> Schedule Meeting
+                        </a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover datatable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">
+                                        <b>#</b>
+                                    </th>
+                                    <th>
+                                        <b>Meeting Date</b>
+                                    </th>
+                                    <th>
+                                        <b>Description</b>
+                                    </th>
+                                    <th>
+                                        <b>Venue ID</b>
+                                    </th>
+                                    <th>
+                                        <b>Type ID</b>
+                                    </th>
+                                    <th>
+                                        <b>Department ID</b>
+                                    </th>
+                                    <th class="text-center" style="width: 150px;">
+                                        <b>Actions</b>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="text-center fw-bold">@item.MeetingID</td>
+                                        <td>@item.MeetingDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>
+                                            <span class="fw-500">@item.MeetingDescription</span>
+                                        </td>
+                                        <td>@item.MeetingVenueID</td>
+                                        <td>@item.MeetingTypeID</td>
+                                        <td>@item.DepartmentID</td>
+                                        <td class="text-center">
+                                            <a asp-controller="Meetings" asp-action="Edit" asp-route-id="@item.MeetingID" class="btn btn-sm btn-info" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-controller="Meetings" asp-action="Delete" asp-route-id="@item.MeetingID" class="btn btn-sm btn-danger" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .table thead th {
+        background-color: #f6f9ff;
+        color: #012970;
+        font-weight: 600;
+        border-bottom: 2px solid #ebeef4;
+        padding: 15px;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f9fbff;
+        transition: background-color 0.2s ease;
+    }
+
+    .table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ebeef4;
+        vertical-align: middle;
+    }
+
+    .fw-500 {
+        font-weight: 500;
+        color: #012970;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+    }
+
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+
+    .btn-primary:hover {
+        background-color: #3144d9;
+        border-color: #2836c0;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+</style>

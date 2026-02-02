@@ -1,0 +1,307 @@
+@{
+    ViewData["Title"] = "Meeting Types";
+}
+
+<div class="pagetitle">
+    <h1>Meeting Types</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item">Master Data</li>
+            <li class="breadcrumb-item active">Meeting Types</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Meeting Type List</h5>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMeetingTypeModal">
+                            <i class="bi bi-plus-circle"></i> Add Meeting Type
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover datatable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 60px;"><b>#</b></th>
+                                    <th><b>Meeting Type Name</b></th>
+                                    <th><b>Remarks</b></th>
+                                    <th class="text-center" style="width: 150px;"><b>Created</b></th>
+                                    <th class="text-center" style="width: 150px;"><b>Modified</b></th>
+                                    <th class="text-center" style="width: 120px;"><b>Actions</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center fw-bold">1</td>
+                                    <td><span class="fw-500">Regular Meeting</span></td>
+                                    <td>Standard team meetings</td>
+                                    <td class="text-center">01/01/2026</td>
+                                    <td class="text-center">05/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" onclick="editMeetingType(1, 'Regular Meeting', 'Standard team meetings')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" onclick="deleteMeetingType(1, 'Regular Meeting')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">2</td>
+                                    <td><span class="fw-500">Board Meeting</span></td>
+                                    <td>Executive board discussions</td>
+                                    <td class="text-center">01/01/2026</td>
+                                    <td class="text-center">03/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" onclick="editMeetingType(2, 'Board Meeting', 'Executive board discussions')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" onclick="deleteMeetingType(2, 'Board Meeting')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">3</td>
+                                    <td><span class="fw-500">Project Review</span></td>
+                                    <td>Project status and review sessions</td>
+                                    <td class="text-center">02/01/2026</td>
+                                    <td class="text-center">05/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" onclick="editMeetingType(3, 'Project Review', 'Project status and review sessions')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" onclick="deleteMeetingType(3, 'Project Review')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">4</td>
+                                    <td><span class="fw-500">Town Hall</span></td>
+                                    <td>Company-wide announcements</td>
+                                    <td class="text-center">03/01/2026</td>
+                                    <td class="text-center">04/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" onclick="editMeetingType(4, 'Town Hall', 'Company-wide announcements')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" onclick="deleteMeetingType(4, 'Town Hall')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">5</td>
+                                    <td><span class="fw-500">Training Session</span></td>
+                                    <td>Employee training and workshops</td>
+                                    <td class="text-center">04/01/2026</td>
+                                    <td class="text-center">06/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" onclick="editMeetingType(5, 'Training Session', 'Employee training and workshops')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" onclick="deleteMeetingType(5, 'Training Session')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Meeting Type Modal -->
+<div class="modal fade" id="addMeetingTypeModal" tabindex="-1" aria-labelledby="addMeetingTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addMeetingTypeModalLabel"><i class="bi bi-plus-circle me-2"></i>Add Meeting Type</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addMeetingTypeForm">
+                    <div class="mb-3">
+                        <label for="meetingTypeName" class="form-label">Meeting Type Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="meetingTypeName" placeholder="Enter meeting type name" required>
+                        <div class="invalid-feedback">Please enter meeting type name.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="meetingTypeRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="meetingTypeRemarks" rows="3" placeholder="Enter remarks"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" onclick="saveMeetingType()">
+                    <i class="bi bi-check-circle me-1"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Meeting Type Modal -->
+<div class="modal fade" id="editMeetingTypeModal" tabindex="-1" aria-labelledby="editMeetingTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editMeetingTypeModalLabel"><i class="bi bi-pencil me-2"></i>Edit Meeting Type</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editMeetingTypeForm">
+                    <input type="hidden" id="editMeetingTypeId">
+                    <div class="mb-3">
+                        <label for="editMeetingTypeName" class="form-label">Meeting Type Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="editMeetingTypeName" placeholder="Enter meeting type name" required>
+                        <div class="invalid-feedback">Please enter meeting type name.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMeetingTypeRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="editMeetingTypeRemarks" rows="3" placeholder="Enter remarks"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-info" onclick="updateMeetingType()">
+                    <i class="bi bi-check-circle me-1"></i>Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Meeting Type Modal -->
+<div class="modal fade" id="deleteMeetingTypeModal" tabindex="-1" aria-labelledby="deleteMeetingTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteMeetingTypeModalLabel"><i class="bi bi-trash me-2"></i>Delete Meeting Type</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="deleteMeetingTypeId">
+                <p class="mb-0">Are you sure you want to delete the meeting type: <strong id="deleteMeetingTypeName"></strong>?</p>
+                <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteMeetingType()">
+                    <i class="bi bi-trash me-1"></i>Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        background-color: #f6f9ff;
+        color: #012970;
+        font-weight: 600;
+        border-bottom: 2px solid #ebeef4;
+        padding: 15px;
+    }
+    .table tbody tr:hover {
+        background-color: #f9fbff;
+        transition: background-color 0.2s ease;
+    }
+    .table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ebeef4;
+        vertical-align: middle;
+    }
+    .fw-500 {
+        font-weight: 500;
+        color: #012970;
+    }
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+        color: #fff;
+    }
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+    .btn-primary:hover {
+        background-color: #3144d9;
+        border-color: #2836c0;
+    }
+    .modal-header {
+        border-radius: 0;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #012970;
+    }
+</style>
+
+<script>
+    function editMeetingType(id, name, remarks) {
+        document.getElementById('editMeetingTypeId').value = id;
+        document.getElementById('editMeetingTypeName').value = name;
+        document.getElementById('editMeetingTypeRemarks').value = remarks;
+    }
+
+    function deleteMeetingType(id, name) {
+        document.getElementById('deleteMeetingTypeId').value = id;
+        document.getElementById('deleteMeetingTypeName').textContent = name;
+    }
+
+    function saveMeetingType() {
+        var name = document.getElementById('meetingTypeName').value;
+        if (name.trim() === '') {
+            document.getElementById('meetingTypeName').classList.add('is-invalid');
+            return;
+        }
+        alert('Meeting Type "' + name + '" added successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('addMeetingTypeModal'));
+        modal.hide();
+        document.getElementById('meetingTypeName').value = '';
+        document.getElementById('meetingTypeRemarks').value = '';
+    }
+
+    function updateMeetingType() {
+        var name = document.getElementById('editMeetingTypeName').value;
+        if (name.trim() === '') {
+            document.getElementById('editMeetingTypeName').classList.add('is-invalid');
+            return;
+        }
+        alert('Meeting Type updated successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('editMeetingTypeModal'));
+        modal.hide();
+    }
+
+    function confirmDeleteMeetingType() {
+        var name = document.getElementById('deleteMeetingTypeName').textContent;
+        alert('Meeting Type "' + name + '" deleted successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('deleteMeetingTypeModal'));
+        modal.hide();
+    }
+</script>

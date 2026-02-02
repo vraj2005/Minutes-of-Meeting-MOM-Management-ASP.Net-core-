@@ -1,0 +1,110 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using MOM_Project.Models;
+
+namespace MOM_Project.Controllers
+{
+    public class StaffController : Controller
+    {
+        // Static data for demonstration
+        private static List<Staff> staff = new List<Staff>
+        {
+            new Staff { StaffID = 1, DepartmentID = 1, StaffName = "John Doe", MobileNo = "9876543210", EmailAddress = "john.doe@company.com", Remarks = "Senior Manager", Created = DateTime.Now.AddDays(-10), Modified = DateTime.Now.AddDays(-10) },
+            new Staff { StaffID = 2, DepartmentID = 1, StaffName = "Jane Smith", MobileNo = "9876543211", EmailAddress = "jane.smith@company.com", Remarks = "Project Lead", Created = DateTime.Now.AddDays(-8), Modified = DateTime.Now.AddDays(-8) },
+            new Staff { StaffID = 3, DepartmentID = 2, StaffName = "Mike Johnson", MobileNo = "9876543212", EmailAddress = "mike.johnson@company.com", Remarks = "Finance Manager", Created = DateTime.Now.AddDays(-5), Modified = DateTime.Now.AddDays(-5) },
+            new Staff { StaffID = 4, DepartmentID = 3, StaffName = "Sarah Williams", MobileNo = "9876543213", EmailAddress = "sarah.williams@company.com", Remarks = "Operations Head", Created = DateTime.Now.AddDays(-2), Modified = DateTime.Now.AddDays(-2) }
+        };
+
+        public IActionResult Index()
+        {
+            return View(staff);
+        }
+
+        public IActionResult Details(int id)
+        {
+            var staffMember = staff.FirstOrDefault(s => s.StaffID == id);
+            if (staffMember == null)
+            {
+                return NotFound();
+            }
+            return View(staffMember);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create([Bind("DepartmentID,StaffName,MobileNo,EmailAddress,Remarks")] Staff staffMember)
+        {
+            if (ModelState.IsValid)
+            {
+                staffMember.StaffID = staff.Max(s => s.StaffID) + 1;
+                staffMember.Created = DateTime.Now;
+                staffMember.Modified = DateTime.Now;
+                staff.Add(staffMember);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(staffMember);
+        }
+
+        public IActionResult Edit(int id)
+        {
+            var staffMember = staff.FirstOrDefault(s => s.StaffID == id);
+            if (staffMember == null)
+            {
+                return NotFound();
+            }
+            return View(staffMember);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, [Bind("StaffID,DepartmentID,StaffName,MobileNo,EmailAddress,Remarks,Created")] Staff staffMember)
+        {
+            if (id != staffMember.StaffID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var existingStaff = staff.FirstOrDefault(s => s.StaffID == id);
+                if (existingStaff != null)
+                {
+                    existingStaff.DepartmentID = staffMember.DepartmentID;
+                    existingStaff.StaffName = staffMember.StaffName;
+                    existingStaff.MobileNo = staffMember.MobileNo;
+                    existingStaff.EmailAddress = staffMember.EmailAddress;
+                    existingStaff.Remarks = staffMember.Remarks;
+                    existingStaff.Modified = DateTime.Now;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(staffMember);
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var staffMember = staff.FirstOrDefault(s => s.StaffID == id);
+            if (staffMember == null)
+            {
+                return NotFound();
+            }
+            return View(staffMember);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var staffMember = staff.FirstOrDefault(s => s.StaffID == id);
+            if (staffMember != null)
+            {
+                staff.Remove(staffMember);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}

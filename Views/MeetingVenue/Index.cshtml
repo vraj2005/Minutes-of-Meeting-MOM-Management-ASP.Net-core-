@@ -1,0 +1,328 @@
+@{
+    ViewData["Title"] = "Meeting Venues";
+}
+
+<div class="pagetitle">
+    <h1>Meeting Venues</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item">Master Data</li>
+            <li class="breadcrumb-item active">Meeting Venues</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Venue List</h5>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addVenueModal">
+                            <i class="bi bi-plus-circle"></i> Add Venue
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover datatable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 60px;"><b>#</b></th>
+                                    <th><b>Venue Name</b></th>
+                                    <th class="text-center" style="width: 120px;"><b>Capacity</b></th>
+                                    <th class="text-center" style="width: 120px;"><b>Status</b></th>
+                                    <th class="text-center" style="width: 150px;"><b>Created</b></th>
+                                    <th class="text-center" style="width: 150px;"><b>Modified</b></th>
+                                    <th class="text-center" style="width: 120px;"><b>Actions</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center fw-bold">1</td>
+                                    <td><span class="fw-500">Conference Room A</span></td>
+                                    <td class="text-center">20</td>
+                                    <td class="text-center"><span class="badge bg-success">Available</span></td>
+                                    <td class="text-center">01/01/2026</td>
+                                    <td class="text-center">05/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editVenueModal" onclick="editVenue(1, 'Conference Room A')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteVenueModal" onclick="deleteVenue(1, 'Conference Room A')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">2</td>
+                                    <td><span class="fw-500">Conference Room B</span></td>
+                                    <td class="text-center">15</td>
+                                    <td class="text-center"><span class="badge bg-success">Available</span></td>
+                                    <td class="text-center">01/01/2026</td>
+                                    <td class="text-center">03/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editVenueModal" onclick="editVenue(2, 'Conference Room B')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteVenueModal" onclick="deleteVenue(2, 'Conference Room B')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">3</td>
+                                    <td><span class="fw-500">Board Room</span></td>
+                                    <td class="text-center">12</td>
+                                    <td class="text-center"><span class="badge bg-warning">In Use</span></td>
+                                    <td class="text-center">02/01/2026</td>
+                                    <td class="text-center">05/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editVenueModal" onclick="editVenue(3, 'Board Room')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteVenueModal" onclick="deleteVenue(3, 'Board Room')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">4</td>
+                                    <td><span class="fw-500">Main Auditorium</span></td>
+                                    <td class="text-center">200</td>
+                                    <td class="text-center"><span class="badge bg-success">Available</span></td>
+                                    <td class="text-center">03/01/2026</td>
+                                    <td class="text-center">04/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editVenueModal" onclick="editVenue(4, 'Main Auditorium')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteVenueModal" onclick="deleteVenue(4, 'Main Auditorium')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">5</td>
+                                    <td><span class="fw-500">Training Room</span></td>
+                                    <td class="text-center">30</td>
+                                    <td class="text-center"><span class="badge bg-danger">Maintenance</span></td>
+                                    <td class="text-center">04/01/2026</td>
+                                    <td class="text-center">06/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editVenueModal" onclick="editVenue(5, 'Training Room')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteVenueModal" onclick="deleteVenue(5, 'Training Room')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">6</td>
+                                    <td><span class="fw-500">Virtual Meeting Room</span></td>
+                                    <td class="text-center">100</td>
+                                    <td class="text-center"><span class="badge bg-success">Available</span></td>
+                                    <td class="text-center">05/01/2026</td>
+                                    <td class="text-center">06/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editVenueModal" onclick="editVenue(6, 'Virtual Meeting Room')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteVenueModal" onclick="deleteVenue(6, 'Virtual Meeting Room')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Venue Modal -->
+<div class="modal fade" id="addVenueModal" tabindex="-1" aria-labelledby="addVenueModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addVenueModalLabel"><i class="bi bi-plus-circle me-2"></i>Add Venue</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addVenueForm">
+                    <div class="mb-3">
+                        <label for="venueName" class="form-label">Venue Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="venueName" placeholder="Enter venue name" required>
+                        <div class="invalid-feedback">Please enter venue name.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" onclick="saveVenue()">
+                    <i class="bi bi-check-circle me-1"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Venue Modal -->
+<div class="modal fade" id="editVenueModal" tabindex="-1" aria-labelledby="editVenueModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editVenueModalLabel"><i class="bi bi-pencil me-2"></i>Edit Venue</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editVenueForm">
+                    <input type="hidden" id="editVenueId">
+                    <div class="mb-3">
+                        <label for="editVenueName" class="form-label">Venue Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="editVenueName" placeholder="Enter venue name" required>
+                        <div class="invalid-feedback">Please enter venue name.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-info" onclick="updateVenue()">
+                    <i class="bi bi-check-circle me-1"></i>Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Venue Modal -->
+<div class="modal fade" id="deleteVenueModal" tabindex="-1" aria-labelledby="deleteVenueModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteVenueModalLabel"><i class="bi bi-trash me-2"></i>Delete Venue</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="deleteVenueId">
+                <p class="mb-0">Are you sure you want to delete the venue: <strong id="deleteVenueName"></strong>?</p>
+                <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteVenue()">
+                    <i class="bi bi-trash me-1"></i>Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        background-color: #f6f9ff;
+        color: #012970;
+        font-weight: 600;
+        border-bottom: 2px solid #ebeef4;
+        padding: 15px;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f9fbff;
+        transition: background-color 0.2s ease;
+    }
+
+    .table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ebeef4;
+        vertical-align: middle;
+    }
+
+    .fw-500 {
+        font-weight: 500;
+        color: #012970;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+        color: #fff;
+    }
+
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+
+    .btn-primary:hover {
+        background-color: #3144d9;
+        border-color: #2836c0;
+    }
+
+    .modal-header {
+        border-radius: 0;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #012970;
+    }
+</style>
+
+<script>
+    function editVenue(id, name) {
+        document.getElementById('editVenueId').value = id;
+        document.getElementById('editVenueName').value = name;
+    }
+
+    function deleteVenue(id, name) {
+        document.getElementById('deleteVenueId').value = id;
+        document.getElementById('deleteVenueName').textContent = name;
+    }
+
+    function saveVenue() {
+        var name = document.getElementById('venueName').value;
+        if (name.trim() === '') {
+            document.getElementById('venueName').classList.add('is-invalid');
+            return;
+        }
+        alert('Venue "' + name + '" added successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('addVenueModal'));
+        modal.hide();
+        document.getElementById('venueName').value = '';
+    }
+
+    function updateVenue() {
+        var name = document.getElementById('editVenueName').value;
+        if (name.trim() === '') {
+            document.getElementById('editVenueName').classList.add('is-invalid');
+            return;
+        }
+        alert('Venue updated successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('editVenueModal'));
+        modal.hide();
+    }
+
+    function confirmDeleteVenue() {
+        var name = document.getElementById('deleteVenueName').textContent;
+        alert('Venue "' + name + '" deleted successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('deleteVenueModal'));
+        modal.hide();
+    }
+</script>

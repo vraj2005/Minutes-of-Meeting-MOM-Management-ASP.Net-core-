@@ -1,0 +1,12 @@
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace MOM_Project.Controllers
+{
+    public class DepartmentController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+    }
+}
