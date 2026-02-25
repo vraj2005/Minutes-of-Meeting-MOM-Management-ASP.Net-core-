@@ -1,0 +1,391 @@
+﻿@{
+    ViewData["Title"] = "Meeting Attendance";
+}
+
+<div class="pagetitle">
+    <h1>Meeting Attendance</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item">Meeting Management</li>
+            <li class="breadcrumb-item active">Attendance</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Attendance Records</h5>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+                            <i class="bi bi-plus-circle"></i> Add Member to Meeting
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover datatable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 60px;"><b>#</b></th>
+                                    <th><b>Meeting</b></th>
+                                    <th><b>Staff Member</b></th>
+                                    <th class="text-center"><b>Attendance</b></th>
+                                    <th><b>Remarks</b></th>
+                                    <th class="text-center" style="width: 150px;"><b>Date</b></th>
+                                    <th class="text-center" style="width: 120px;"><b>Actions</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center fw-bold">1</td>
+                                    <td><span class="fw-500">Q4 Planning Meeting</span></td>
+                                    <td>John Doe</td>
+                                    <td class="text-center"><span class="badge bg-success">Present</span></td>
+                                    <td>Attended full meeting</td>
+                                    <td class="text-center">10/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMemberModal" onclick="editMember(1, 1, 1, true, 'Attended full meeting')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMemberModal" onclick="deleteMember(1, 'John Doe', 'Q4 Planning Meeting')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">2</td>
+                                    <td><span class="fw-500">Q4 Planning Meeting</span></td>
+                                    <td>Jane Smith</td>
+                                    <td class="text-center"><span class="badge bg-success">Present</span></td>
+                                    <td>Presented quarterly report</td>
+                                    <td class="text-center">10/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMemberModal" onclick="editMember(2, 1, 2, true, 'Presented quarterly report')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMemberModal" onclick="deleteMember(2, 'Jane Smith', 'Q4 Planning Meeting')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">3</td>
+                                    <td><span class="fw-500">Budget Review</span></td>
+                                    <td>Mike Johnson</td>
+                                    <td class="text-center"><span class="badge bg-danger">Absent</span></td>
+                                    <td>On sick leave</td>
+                                    <td class="text-center">11/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMemberModal" onclick="editMember(3, 2, 3, false, 'On sick leave')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMemberModal" onclick="deleteMember(3, 'Mike Johnson', 'Budget Review')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">4</td>
+                                    <td><span class="fw-500">Budget Review</span></td>
+                                    <td>Sarah Williams</td>
+                                    <td class="text-center"><span class="badge bg-success">Present</span></td>
+                                    <td>Chaired the meeting</td>
+                                    <td class="text-center">11/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMemberModal" onclick="editMember(4, 2, 4, true, 'Chaired the meeting')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMemberModal" onclick="deleteMember(4, 'Sarah Williams', 'Budget Review')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center fw-bold">5</td>
+                                    <td><span class="fw-500">Project Status Update</span></td>
+                                    <td>Robert Brown</td>
+                                    <td class="text-center"><span class="badge bg-warning">Late</span></td>
+                                    <td>Joined 15 mins late</td>
+                                    <td class="text-center">12/01/2026</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMemberModal" onclick="editMember(5, 3, 5, true, 'Joined 15 mins late')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMemberModal" onclick="deleteMember(5, 'Robert Brown', 'Project Status Update')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Member Modal -->
+<div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addMemberModalLabel"><i class="bi bi-person-plus me-2"></i>Add Member to Meeting</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addMemberForm">
+                    <div class="mb-3">
+                        <label for="meetingId" class="form-label">Select Meeting <span class="text-danger">*</span></label>
+                        <select class="form-select" id="meetingId" required>
+                            <option value="">Select Meeting</option>
+                            <option value="1">Q4 Planning Meeting (10/01/2026)</option>
+                            <option value="2">Budget Review (11/01/2026)</option>
+                            <option value="3">Project Status Update (12/01/2026)</option>
+                            <option value="4">Team Building Session (13/01/2026)</option>
+                            <option value="5">Training Workshop (14/01/2026)</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a meeting.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="staffId" class="form-label">Select Staff Member <span class="text-danger">*</span></label>
+                        <select class="form-select" id="staffId" required>
+                            <option value="">Select Staff Member</option>
+                            <option value="1">John Doe (Human Resources)</option>
+                            <option value="2">Jane Smith (Finance)</option>
+                            <option value="3">Mike Johnson (IT Department)</option>
+                            <option value="4">Sarah Williams (Operations)</option>
+                            <option value="5">Robert Brown (Marketing)</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a staff member.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Attendance Status <span class="text-danger">*</span></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="isPresent" id="presentYes" value="true" checked>
+                            <label class="form-check-label" for="presentYes">
+                                <span class="badge bg-success">Present</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="isPresent" id="presentNo" value="false">
+                            <label class="form-check-label" for="presentNo">
+                                <span class="badge bg-danger">Absent</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="memberRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="memberRemarks" rows="2" placeholder="Enter remarks (optional)"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" onclick="saveMember()">
+                    <i class="bi bi-check-circle me-1"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Member Modal -->
+<div class="modal fade" id="editMemberModal" tabindex="-1" aria-labelledby="editMemberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editMemberModalLabel"><i class="bi bi-pencil me-2"></i>Edit Attendance</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editMemberForm">
+                    <input type="hidden" id="editMemberId">
+                    <div class="mb-3">
+                        <label for="editMeetingId" class="form-label">Select Meeting <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editMeetingId" required>
+                            <option value="">Select Meeting</option>
+                            <option value="1">Q4 Planning Meeting (10/01/2026)</option>
+                            <option value="2">Budget Review (11/01/2026)</option>
+                            <option value="3">Project Status Update (12/01/2026)</option>
+                            <option value="4">Team Building Session (13/01/2026)</option>
+                            <option value="5">Training Workshop (14/01/2026)</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a meeting.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editStaffId" class="form-label">Select Staff Member <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editStaffId" required>
+                            <option value="">Select Staff Member</option>
+                            <option value="1">John Doe (Human Resources)</option>
+                            <option value="2">Jane Smith (Finance)</option>
+                            <option value="3">Mike Johnson (IT Department)</option>
+                            <option value="4">Sarah Williams (Operations)</option>
+                            <option value="5">Robert Brown (Marketing)</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a staff member.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Attendance Status <span class="text-danger">*</span></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="editIsPresent" id="editPresentYes" value="true">
+                            <label class="form-check-label" for="editPresentYes">
+                                <span class="badge bg-success">Present</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="editIsPresent" id="editPresentNo" value="false">
+                            <label class="form-check-label" for="editPresentNo">
+                                <span class="badge bg-danger">Absent</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMemberRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="editMemberRemarks" rows="2" placeholder="Enter remarks (optional)"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-info" onclick="updateMember()">
+                    <i class="bi bi-check-circle me-1"></i>Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Member Modal -->
+<div class="modal fade" id="deleteMemberModal" tabindex="-1" aria-labelledby="deleteMemberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteMemberModalLabel"><i class="bi bi-trash me-2"></i>Remove Attendance Record</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="deleteMemberId">
+                <p class="mb-0">Are you sure you want to remove <strong id="deleteStaffName"></strong> from <strong id="deleteMeetingName"></strong>?</p>
+                <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteMember()">
+                    <i class="bi bi-trash me-1"></i>Remove
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        background-color: #f6f9ff;
+        color: #012970;
+        font-weight: 600;
+        border-bottom: 2px solid #ebeef4;
+        padding: 15px;
+    }
+    .table tbody tr:hover {
+        background-color: #f9fbff;
+        transition: background-color 0.2s ease;
+    }
+    .table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ebeef4;
+        vertical-align: middle;
+    }
+    .fw-500 {
+        font-weight: 500;
+        color: #012970;
+    }
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+        color: #fff;
+    }
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+    .btn-primary:hover {
+        background-color: #3144d9;
+        border-color: #2836c0;
+    }
+    .modal-header {
+        border-radius: 0;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #012970;
+    }
+    .form-check-input:checked {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+</style>
+
+<script>
+    function editMember(id, meetingId, staffId, isPresent, remarks) {
+        document.getElementById('editMemberId').value = id;
+        document.getElementById('editMeetingId').value = meetingId;
+        document.getElementById('editStaffId').value = staffId;
+        document.getElementById('editMemberRemarks').value = remarks;
+        
+        if (isPresent) {
+            document.getElementById('editPresentYes').checked = true;
+        } else {
+            document.getElementById('editPresentNo').checked = true;
+        }
+    }
+
+    function deleteMember(id, staffName, meetingName) {
+        document.getElementById('deleteMemberId').value = id;
+        document.getElementById('deleteStaffName').textContent = staffName;
+        document.getElementById('deleteMeetingName').textContent = meetingName;
+    }
+
+    function saveMember() {
+        var meetingId = document.getElementById('meetingId').value;
+        var staffId = document.getElementById('staffId').value;
+        
+        var isValid = true;
+        if (meetingId === '') { document.getElementById('meetingId').classList.add('is-invalid'); isValid = false; }
+        if (staffId === '') { document.getElementById('staffId').classList.add('is-invalid'); isValid = false; }
+        
+        if (!isValid) return;
+        
+        alert('Member added to meeting successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('addMemberModal'));
+        modal.hide();
+        document.getElementById('addMemberForm').reset();
+    }
+
+    function updateMember() {
+        alert('Attendance record updated successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('editMemberModal'));
+        modal.hide();
+    }
+
+    function confirmDeleteMember() {
+        var staffName = document.getElementById('deleteStaffName').textContent;
+        alert('Attendance record for "' + staffName + '" removed successfully!');
+        var modal = bootstrap.Modal.getInstance(document.getElementById('deleteMemberModal'));
+        modal.hide();
+    }
+</script>

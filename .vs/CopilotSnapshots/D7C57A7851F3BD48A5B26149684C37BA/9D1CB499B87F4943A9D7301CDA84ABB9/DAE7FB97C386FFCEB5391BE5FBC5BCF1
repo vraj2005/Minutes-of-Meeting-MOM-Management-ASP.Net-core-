@@ -1,0 +1,133 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using MOM_Project.Models;
+using System.Data;
+
+namespace MOM_Project.Controllers
+{
+    public class MeetingVenueController : Controller
+    {
+        private readonly string _connectionString;
+
+        public MeetingVenueController(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("MOM_DB")
+                ?? throw new InvalidOperationException("Connection string 'MOM_DB' not found.");
+        }
+
+        public IActionResult Index()
+        {
+            var venues = new List<MeetingVenue>();
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("PR_MOM_MeetingVenue_SelectAll", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                venues.Add(new MeetingVenue
+                {
+                    MeetingVenueID = reader.GetInt32(reader.GetOrdinal("MeetingVenueID")),
+                    MeetingVenueName = reader.GetString(reader.GetOrdinal("MeetingVenueName")),
+                    Remarks = reader.IsDBNull(reader.GetOrdinal("Remarks")) ? null : reader.GetString(reader.GetOrdinal("Remarks")),
+                    Created = reader.GetDateTime(reader.GetOrdinal("Created")),
+                    Modified = reader.GetDateTime(reader.GetOrdinal("Modified"))
+                });
+            }
+
+            return View(venues);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(MeetingVenue meetingVenue)
+        {
+            if (string.IsNullOrWhiteSpace(meetingVenue.MeetingVenueName))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("PR_MOM_MeetingVenue_Insert", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            command.Parameters.AddWithValue("@MeetingVenueName", meetingVenue.MeetingVenueName.Trim());
+            command.Parameters.AddWithValue("@Remarks", (object?)meetingVenue.Remarks ?? DBNull.Value);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Edit(int id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(MeetingVenue meetingVenue)
+        {
+            if (meetingVenue.MeetingVenueID <= 0 || string.IsNullOrWhiteSpace(meetingVenue.MeetingVenueName))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("PR_MOM_MeetingVenue_UpdateByPK", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            command.Parameters.AddWithValue("@MeetingVenueID", meetingVenue.MeetingVenueID);
+            command.Parameters.AddWithValue("@MeetingVenueName", meetingVenue.MeetingVenueName.Trim());
+            command.Parameters.AddWithValue("@Remarks", (object?)meetingVenue.Remarks ?? DBNull.Value);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int meetingVenueId)
+        {
+            if (meetingVenueId <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("PR_MOM_MeetingVenue_DeleteByPK", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            command.Parameters.AddWithValue("@MeetingVenueID", meetingVenueId);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}

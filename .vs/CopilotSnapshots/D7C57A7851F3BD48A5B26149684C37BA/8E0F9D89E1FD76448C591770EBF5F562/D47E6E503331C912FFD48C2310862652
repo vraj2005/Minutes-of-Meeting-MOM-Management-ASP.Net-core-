@@ -1,0 +1,234 @@
+﻿@model IEnumerable<MOM_Project.Models.MeetingType>
+
+@{
+    ViewData["Title"] = "Meeting Types";
+}
+
+<div class="pagetitle">
+    <h1>Meeting Types</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item">Master Data</li>
+            <li class="breadcrumb-item active">Meeting Types</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Meeting Type List</h5>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMeetingTypeModal">
+                            <i class="bi bi-plus-circle"></i> Add Meeting Type
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover datatable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 60px;"><b>#</b></th>
+                                    <th><b>Meeting Type Name</b></th>
+                                    <th><b>Remarks</b></th>
+                                    <th class="text-center" style="width: 150px;"><b>Created</b></th>
+                                    <th class="text-center" style="width: 150px;"><b>Modified</b></th>
+                                    <th class="text-center" style="width: 120px;"><b>Actions</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var rowIndex = 0;
+                                }
+                                @if (Model != null)
+                                {
+                                    foreach (var meetingType in Model)
+                                    {
+                                        rowIndex++;
+                                        <tr>
+                                            <td class="text-center fw-bold">@rowIndex</td>
+                                            <td><span class="fw-500">@meetingType.MeetingTypeName</span></td>
+                                            <td>@meetingType.Remarks</td>
+                                            <td class="text-center">@meetingType.Created.ToString("dd/MM/yyyy")</td>
+                                            <td class="text-center">@meetingType.Modified.ToString("dd/MM/yyyy")</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" onclick="editMeetingType(@meetingType.MeetingTypeID, '@meetingType.MeetingTypeName', '@(meetingType.Remarks ?? string.Empty)')">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" onclick="deleteMeetingType(@meetingType.MeetingTypeID, '@meetingType.MeetingTypeName')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Meeting Type Modal -->
+<div class="modal fade" id="addMeetingTypeModal" tabindex="-1" aria-labelledby="addMeetingTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addMeetingTypeModalLabel"><i class="bi bi-plus-circle me-2"></i>Add Meeting Type</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addMeetingTypeForm" asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="meetingTypeName" class="form-label">Meeting Type Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="meetingTypeName" name="MeetingTypeName" placeholder="Enter meeting type name" required>
+                        <div class="invalid-feedback">Please enter meeting type name.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="meetingTypeRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="meetingTypeRemarks" name="Remarks" rows="3" placeholder="Enter remarks"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" form="addMeetingTypeForm" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Meeting Type Modal -->
+<div class="modal fade" id="editMeetingTypeModal" tabindex="-1" aria-labelledby="editMeetingTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editMeetingTypeModalLabel"><i class="bi bi-pencil me-2"></i>Edit Meeting Type</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editMeetingTypeForm" asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editMeetingTypeId" name="MeetingTypeID">
+                    <div class="mb-3">
+                        <label for="editMeetingTypeName" class="form-label">Meeting Type Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="editMeetingTypeName" name="MeetingTypeName" placeholder="Enter meeting type name" required>
+                        <div class="invalid-feedback">Please enter meeting type name.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMeetingTypeRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="editMeetingTypeRemarks" name="Remarks" rows="3" placeholder="Enter remarks"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" form="editMeetingTypeForm" class="btn btn-info">
+                    <i class="bi bi-check-circle me-1"></i>Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Meeting Type Modal -->
+<div class="modal fade" id="deleteMeetingTypeModal" tabindex="-1" aria-labelledby="deleteMeetingTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteMeetingTypeForm" asp-action="DeleteConfirmed" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteMeetingTypeModalLabel"><i class="bi bi-trash me-2"></i>Delete Meeting Type</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="deleteMeetingTypeIdInput" name="meetingTypeId">
+                    <p class="mb-0">Are you sure you want to delete the meeting type: <strong id="deleteMeetingTypeName"></strong>?</p>
+                    <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        background-color: #f6f9ff;
+        color: #012970;
+        font-weight: 600;
+        border-bottom: 2px solid #ebeef4;
+        padding: 15px;
+    }
+    .table tbody tr:hover {
+        background-color: #f9fbff;
+        transition: background-color 0.2s ease;
+    }
+    .table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ebeef4;
+        vertical-align: middle;
+    }
+    .fw-500 {
+        font-weight: 500;
+        color: #012970;
+    }
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+        color: #fff;
+    }
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+    .btn-primary:hover {
+        background-color: #3144d9;
+        border-color: #2836c0;
+    }
+    .modal-header {
+        border-radius: 0;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #012970;
+    }
+</style>
+
+<script>
+    function editMeetingType(id, name, remarks) {
+        document.getElementById('editMeetingTypeId').value = id;
+        document.getElementById('editMeetingTypeName').value = name;
+        document.getElementById('editMeetingTypeRemarks').value = remarks;
+    }
+
+    function deleteMeetingType(id, name) {
+        document.getElementById('deleteMeetingTypeId').value = id;
+        document.getElementById('deleteMeetingTypeIdInput').value = id;
+        document.getElementById('deleteMeetingTypeName').textContent = name;
+    }
+</script>

@@ -1,0 +1,12 @@
+﻿{
+  "ConnectionStrings": {
+    "MOM_DB": ""
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}

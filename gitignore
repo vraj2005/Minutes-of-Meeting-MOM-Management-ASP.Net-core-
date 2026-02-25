@@ -1,2 +1,6 @@
 # Visual Studio
 .vs/
+__pycache__/
+*.pkl
+*.zip
+.env

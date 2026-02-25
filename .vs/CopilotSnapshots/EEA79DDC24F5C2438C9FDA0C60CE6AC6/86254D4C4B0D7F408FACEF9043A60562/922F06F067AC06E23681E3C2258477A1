@@ -1,0 +1,303 @@
+﻿@model IEnumerable<MOM_Project.Models.Staff>
+
+@{
+    ViewData["Title"] = "Staff Members";
+}
+
+<div class="pagetitle">
+    <h1>Staff Members</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item">Master Data</li>
+            <li class="breadcrumb-item active">Staff Members</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Staff List</h5>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addStaffModal">
+                            <i class="bi bi-plus-circle"></i> Add Staff
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover datatable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 60px;"><b>#</b></th>
+                                    <th><b>Staff Name</b></th>
+                                    <th><b>Department</b></th>
+                                    <th><b>Mobile No</b></th>
+                                    <th><b>Email Address</b></th>
+                                    <th><b>Remarks</b></th>
+                                    <th class="text-center" style="width: 120px;"><b>Actions</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var rowIndex = 0;
+                                }
+                                @if (Model != null)
+                                {
+                                    foreach (var staff in Model)
+                                    {
+                                        rowIndex++;
+                                        <tr>
+                                            <td class="text-center fw-bold">@rowIndex</td>
+                                            <td><span class="fw-500">@staff.StaffName</span></td>
+                                            <td><span class="badge bg-primary">@staff.DepartmentName</span></td>
+                                            <td>@staff.MobileNo</td>
+                                            <td>@staff.EmailAddress</td>
+                                            <td>@staff.Remarks</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editStaffModal" onclick="editStaff(@staff.StaffID, '@staff.StaffName', @staff.DepartmentID, '@(staff.MobileNo ?? string.Empty)', '@(staff.EmailAddress ?? string.Empty)', '@(staff.Remarks ?? string.Empty)')">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteStaffModal" onclick="deleteStaff(@staff.StaffID, '@staff.StaffName')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Staff Modal -->
+<div class="modal fade" id="addStaffModal" tabindex="-1" aria-labelledby="addStaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addStaffModalLabel"><i class="bi bi-plus-circle me-2"></i>Add Staff Member</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addStaffForm" asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="staffName" class="form-label">Staff Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="staffName" name="StaffName" placeholder="Enter staff name" required>
+                            <div class="invalid-feedback">Please enter staff name.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="departmentId" class="form-label">Department <span class="text-danger">*</span></label>
+                            <select class="form-select" id="departmentId" name="DepartmentID" required>
+                                <option value="">Select Department</option>
+                                @if (ViewBag.Departments != null)
+                                {
+                                    foreach (var department in (IEnumerable<MOM_Project.Models.Department>)ViewBag.Departments)
+                                    {
+                                        <option value="@department.DepartmentID">@department.DepartmentName</option>
+                                    }
+                                }
+                            </select>
+                            <div class="invalid-feedback">Please select a department.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="mobileNo" class="form-label">Mobile No <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="mobileNo" name="MobileNo" placeholder="Enter mobile number" required>
+                            <div class="invalid-feedback">Please enter mobile number.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="emailAddress" class="form-label">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="emailAddress" name="EmailAddress" placeholder="Enter email address" required>
+                            <div class="invalid-feedback">Please enter valid email address.</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="remarks" name="Remarks" rows="2" placeholder="Enter remarks"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" form="addStaffForm" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Staff Modal -->
+<div class="modal fade" id="editStaffModal" tabindex="-1" aria-labelledby="editStaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editStaffModalLabel"><i class="bi bi-pencil me-2"></i>Edit Staff Member</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editStaffForm" asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editStaffId" name="StaffID">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editStaffName" class="form-label">Staff Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editStaffName" name="StaffName" placeholder="Enter staff name" required>
+                            <div class="invalid-feedback">Please enter staff name.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editDepartmentId" class="form-label">Department <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editDepartmentId" name="DepartmentID" required>
+                                <option value="">Select Department</option>
+                                @if (ViewBag.Departments != null)
+                                {
+                                    foreach (var department in (IEnumerable<MOM_Project.Models.Department>)ViewBag.Departments)
+                                    {
+                                        <option value="@department.DepartmentID">@department.DepartmentName</option>
+                                    }
+                                }
+                            </select>
+                            <div class="invalid-feedback">Please select a department.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editMobileNo" class="form-label">Mobile No <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editMobileNo" name="MobileNo" placeholder="Enter mobile number" required>
+                            <div class="invalid-feedback">Please enter mobile number.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editEmailAddress" class="form-label">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="editEmailAddress" name="EmailAddress" placeholder="Enter email address" required>
+                            <div class="invalid-feedback">Please enter valid email address.</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="editRemarks" name="Remarks" rows="2" placeholder="Enter remarks"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" form="editStaffForm" class="btn btn-info">
+                    <i class="bi bi-check-circle me-1"></i>Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Staff Modal -->
+<div class="modal fade" id="deleteStaffModal" tabindex="-1" aria-labelledby="deleteStaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteStaffForm" asp-action="DeleteConfirmed" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteStaffModalLabel"><i class="bi bi-trash me-2"></i>Delete Staff Member</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="deleteStaffIdInput" name="staffId">
+                    <p class="mb-0">Are you sure you want to delete the staff member: <strong id="deleteStaffName"></strong>?</p>
+                    <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        background-color: #f6f9ff;
+        color: #012970;
+        font-weight: 600;
+        border-bottom: 2px solid #ebeef4;
+        padding: 15px;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f9fbff;
+        transition: background-color 0.2s ease;
+    }
+
+    .table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ebeef4;
+        vertical-align: middle;
+    }
+
+    .fw-500 {
+        font-weight: 500;
+        color: #012970;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+        color: #fff;
+    }
+
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+
+    .btn-primary:hover {
+        background-color: #3144d9;
+        border-color: #2836c0;
+    }
+
+    .modal-header {
+        border-radius: 0;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #012970;
+    }
+</style>
+
+<script>
+    function editStaff(id, name, deptId, mobile, email, remarks) {
+        document.getElementById('editStaffId').value = id;
+        document.getElementById('editStaffName').value = name;
+        document.getElementById('editDepartmentId').value = deptId;
+        document.getElementById('editMobileNo').value = mobile;
+        document.getElementById('editEmailAddress').value = email;
+        document.getElementById('editRemarks').value = remarks;
+    }
+
+    function deleteStaff(id, name) {
+        document.getElementById('deleteStaffIdInput').value = id;
+        document.getElementById('deleteStaffName').textContent = name;
+    }
+</script>

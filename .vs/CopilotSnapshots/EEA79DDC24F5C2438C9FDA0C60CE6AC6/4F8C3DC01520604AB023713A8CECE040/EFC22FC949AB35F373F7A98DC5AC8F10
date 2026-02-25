@@ -1,0 +1,337 @@
+﻿@model IEnumerable<MOM_Project.Models.MeetingMember>
+
+@{
+    ViewData["Title"] = "Meeting Attendance";
+    var meetings = ViewBag.Meetings as IEnumerable<MOM_Project.Models.Meeting>;
+    var staff = ViewBag.Staff as IEnumerable<MOM_Project.Models.Staff>;
+}
+
+<div class="pagetitle">
+    <h1>Meeting Attendance</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item">Meeting Management</li>
+            <li class="breadcrumb-item active">Attendance</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Attendance Records</h5>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+                            <i class="bi bi-plus-circle"></i> Add Member to Meeting
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover datatable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 60px;"><b>#</b></th>
+                                    <th><b>Meeting</b></th>
+                                    <th><b>Staff Member</b></th>
+                                    <th class="text-center"><b>Attendance</b></th>
+                                    <th><b>Remarks</b></th>
+                                    <th class="text-center" style="width: 150px;"><b>Date</b></th>
+                                    <th class="text-center" style="width: 120px;"><b>Actions</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var rowIndex = 0;
+                                }
+                                @if (Model != null)
+                                {
+                                    foreach (var member in Model)
+                                    {
+                                        rowIndex++;
+                                        var meetingDate = meetings?.FirstOrDefault(m => m.MeetingID == member.MeetingID)?.MeetingDate;
+                                        var staffName = staff?.FirstOrDefault(s => s.StaffID == member.StaffID)?.StaffName;
+                                        <tr>
+                                            <td class="text-center fw-bold">@rowIndex</td>
+                                            <td><span class="fw-500">@(meetingDate?.ToString() ?? "-")</span></td>
+                                            <td>@(staffName ?? "-")</td>
+                                            <td class="text-center">
+                                                @if (member.IsPresent)
+                                                {
+                                                    <span class="badge bg-success">Present</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Absent</span>
+                                                }
+                                            </td>
+                                            <td>@member.Remarks</td>
+                                            <td class="text-center">@(meetingDate?.ToString("dd/MM/yyyy") ?? "-")</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMemberModal" onclick="editMember(@member.MeetingMemberID, @member.MeetingID, @member.StaffID, @(member.IsPresent ? "true" : "false"), '@(member.Remarks ?? string.Empty)')">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMemberModal" data-id="@member.MeetingMemberID" data-staff="@(staffName ?? string.Empty)" data-meeting="@(meetingDate?.ToString("yyyy-MM-dd HH:mm") ?? string.Empty)" onclick="deleteMember(@member.MeetingMemberID, '@(staffName ?? string.Empty)', '@(meetingDate?.ToString("yyyy-MM-dd HH:mm") ?? string.Empty)')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Member Modal -->
+<div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addMemberModalLabel"><i class="bi bi-person-plus me-2"></i>Add Member to Meeting</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addMemberForm" asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="meetingId" class="form-label">Select Meeting <span class="text-danger">*</span></label>
+                        <select class="form-select" id="meetingId" name="MeetingID" required>
+                            <option value="">Select Meeting</option>
+                            @if (meetings != null)
+                            {
+                                foreach (var meeting in meetings)
+                                {
+                                    <option value="@meeting.MeetingID">@meeting.MeetingDate</option>
+                                }
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please select a meeting.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="staffId" class="form-label">Select Staff Member <span class="text-danger">*</span></label>
+                        <select class="form-select" id="staffId" name="StaffID" required>
+                            <option value="">Select Staff Member</option>
+                            @if (staff != null)
+                            {
+                                foreach (var s in staff)
+                                {
+                                    <option value="@s.StaffID">@s.StaffName (@s.DepartmentName)</option>
+                                }
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please select a staff member.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Attendance Status <span class="text-danger">*</span></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="IsPresent" id="presentYes" value="true" checked>
+                            <label class="form-check-label" for="presentYes">
+                                <span class="badge bg-success">Present</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="IsPresent" id="presentNo" value="false">
+                            <label class="form-check-label" for="presentNo">
+                                <span class="badge bg-danger">Absent</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="memberRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="memberRemarks" name="Remarks" rows="2" placeholder="Enter remarks (optional)"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" form="addMemberForm" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Member Modal -->
+<div class="modal fade" id="editMemberModal" tabindex="-1" aria-labelledby="editMemberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editMemberModalLabel"><i class="bi bi-pencil me-2"></i>Edit Attendance</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editMemberForm" asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editMemberId" name="MeetingMemberID">
+                    <div class="mb-3">
+                        <label for="editMeetingId" class="form-label">Select Meeting <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editMeetingId" name="MeetingID" required>
+                            <option value="">Select Meeting</option>
+                            @if (meetings != null)
+                            {
+                                foreach (var meeting in meetings)
+                                {
+                                    <option value="@meeting.MeetingID">@meeting.MeetingDate</option>
+                                }
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please select a meeting.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editStaffId" class="form-label">Select Staff Member <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editStaffId" name="StaffID" required>
+                            <option value="">Select Staff Member</option>
+                            @if (staff != null)
+                            {
+                                foreach (var s in staff)
+                                {
+                                    <option value="@s.StaffID">@s.StaffName (@s.DepartmentName)</option>
+                                }
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please select a staff member.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Attendance Status <span class="text-danger">*</span></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="IsPresent" id="editPresentYes" value="true">
+                            <label class="form-check-label" for="editPresentYes">
+                                <span class="badge bg-success">Present</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="IsPresent" id="editPresentNo" value="false">
+                            <label class="form-check-label" for="editPresentNo">
+                                <span class="badge bg-danger">Absent</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMemberRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="editMemberRemarks" name="Remarks" rows="2" placeholder="Enter remarks (optional)"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" form="editMemberForm" class="btn btn-info">
+                    <i class="bi bi-check-circle me-1"></i>Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Member Modal -->
+<div class="modal fade" id="deleteMemberModal" tabindex="-1" aria-labelledby="deleteMemberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteMemberForm" asp-action="DeleteConfirmed" method="post">
+                @Html.AntiForgeryToken()
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteMemberModalLabel"><i class="bi bi-trash me-2"></i>Remove Attendance Record</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="deleteMemberId" name="meetingMemberId">
+                <p class="mb-0">Are you sure you want to remove <strong id="deleteStaffName"></strong> from <strong id="deleteMeetingName"></strong>?</p>
+                <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash me-1"></i>Remove
+                </button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        background-color: #f6f9ff;
+        color: #012970;
+        font-weight: 600;
+        border-bottom: 2px solid #ebeef4;
+        padding: 15px;
+    }
+    .table tbody tr:hover {
+        background-color: #f9fbff;
+        transition: background-color 0.2s ease;
+    }
+    .table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ebeef4;
+        vertical-align: middle;
+    }
+    .fw-500 {
+        font-weight: 500;
+        color: #012970;
+    }
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+        color: #fff;
+    }
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+    .btn-primary:hover {
+        background-color: #3144d9;
+        border-color: #2836c0;
+    }
+    .modal-header {
+        border-radius: 0;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #012970;
+    }
+    .form-check-input:checked {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+</style>
+
+<script>
+    function editMember(id, meetingId, staffId, isPresent, remarks) {
+        document.getElementById('editMemberId').value = id;
+        document.getElementById('editMeetingId').value = meetingId;
+        document.getElementById('editStaffId').value = staffId;
+        document.getElementById('editMemberRemarks').value = remarks;
+        
+        if (isPresent) {
+            document.getElementById('editPresentYes').checked = true;
+        } else {
+            document.getElementById('editPresentNo').checked = true;
+        }
+    }
+
+    function deleteMember(id, staffName, meetingName) {
+        document.getElementById('deleteMemberId').value = id;
+        document.getElementById('deleteStaffName').textContent = staffName;
+        document.getElementById('deleteMeetingName').textContent = meetingName;
+    }
+
+</script>

@@ -1,3 +1,5 @@
+@model IEnumerable<MOM_Project.Models.MeetingType>
+
 @{
     ViewData["Title"] = "Meeting Types";
 }
@@ -14,6 +16,13 @@
 </div><!-- End Page Title -->
 
 <section class="section">
+    @if (TempData["ErrorMessage"] is string errorMessage && !string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @errorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -38,81 +47,31 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-center fw-bold">1</td>
-                                    <td><span class="fw-500">Regular Meeting</span></td>
-                                    <td>Standard team meetings</td>
-                                    <td class="text-center">01/01/2026</td>
-                                    <td class="text-center">05/01/2026</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" onclick="editMeetingType(1, 'Regular Meeting', 'Standard team meetings')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" onclick="deleteMeetingType(1, 'Regular Meeting')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">2</td>
-                                    <td><span class="fw-500">Board Meeting</span></td>
-                                    <td>Executive board discussions</td>
-                                    <td class="text-center">01/01/2026</td>
-                                    <td class="text-center">03/01/2026</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" onclick="editMeetingType(2, 'Board Meeting', 'Executive board discussions')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" onclick="deleteMeetingType(2, 'Board Meeting')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">3</td>
-                                    <td><span class="fw-500">Project Review</span></td>
-                                    <td>Project status and review sessions</td>
-                                    <td class="text-center">02/01/2026</td>
-                                    <td class="text-center">05/01/2026</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" onclick="editMeetingType(3, 'Project Review', 'Project status and review sessions')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" onclick="deleteMeetingType(3, 'Project Review')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">4</td>
-                                    <td><span class="fw-500">Town Hall</span></td>
-                                    <td>Company-wide announcements</td>
-                                    <td class="text-center">03/01/2026</td>
-                                    <td class="text-center">04/01/2026</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" onclick="editMeetingType(4, 'Town Hall', 'Company-wide announcements')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" onclick="deleteMeetingType(4, 'Town Hall')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">5</td>
-                                    <td><span class="fw-500">Training Session</span></td>
-                                    <td>Employee training and workshops</td>
-                                    <td class="text-center">04/01/2026</td>
-                                    <td class="text-center">06/01/2026</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" onclick="editMeetingType(5, 'Training Session', 'Employee training and workshops')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" onclick="deleteMeetingType(5, 'Training Session')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                @{
+                                    var rowIndex = 0;
+                                }
+                                @if (Model != null)
+                                {
+                                    foreach (var meetingType in Model)
+                                    {
+                                        rowIndex++;
+                                        <tr>
+                                            <td class="text-center fw-bold">@rowIndex</td>
+                                            <td><span class="fw-500">@meetingType.MeetingTypeName</span></td>
+                                            <td>@meetingType.Remarks</td>
+                                            <td class="text-center">@meetingType.Created.ToString("dd/MM/yyyy")</td>
+                                            <td class="text-center">@meetingType.Modified.ToString("dd/MM/yyyy")</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingTypeModal" data-id="@meetingType.MeetingTypeID" data-name="@meetingType.MeetingTypeName" data-remarks="@(meetingType.Remarks ?? string.Empty)">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingTypeModal" data-id="@meetingType.MeetingTypeID" data-name="@meetingType.MeetingTypeName">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -131,15 +90,16 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addMeetingTypeForm">
+                <form id="addMeetingTypeForm" asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
                     <div class="mb-3">
                         <label for="meetingTypeName" class="form-label">Meeting Type Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="meetingTypeName" placeholder="Enter meeting type name" required>
+                        <input type="text" class="form-control" id="meetingTypeName" name="MeetingTypeName" placeholder="Enter meeting type name" required>
                         <div class="invalid-feedback">Please enter meeting type name.</div>
                     </div>
                     <div class="mb-3">
                         <label for="meetingTypeRemarks" class="form-label">Remarks</label>
-                        <textarea class="form-control" id="meetingTypeRemarks" rows="3" placeholder="Enter remarks"></textarea>
+                        <textarea class="form-control" id="meetingTypeRemarks" name="Remarks" rows="3" placeholder="Enter remarks"></textarea>
                     </div>
                 </form>
             </div>
@@ -147,7 +107,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle me-1"></i>Cancel
                 </button>
-                <button type="button" class="btn btn-primary" onclick="saveMeetingType()">
+                <button type="submit" form="addMeetingTypeForm" class="btn btn-primary">
                     <i class="bi bi-check-circle me-1"></i>Save
                 </button>
             </div>
@@ -164,16 +124,17 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editMeetingTypeForm">
-                    <input type="hidden" id="editMeetingTypeId">
+                <form id="editMeetingTypeForm" asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editMeetingTypeId" name="MeetingTypeID">
                     <div class="mb-3">
                         <label for="editMeetingTypeName" class="form-label">Meeting Type Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="editMeetingTypeName" placeholder="Enter meeting type name" required>
+                        <input type="text" class="form-control" id="editMeetingTypeName" name="MeetingTypeName" placeholder="Enter meeting type name" required>
                         <div class="invalid-feedback">Please enter meeting type name.</div>
                     </div>
                     <div class="mb-3">
                         <label for="editMeetingTypeRemarks" class="form-label">Remarks</label>
-                        <textarea class="form-control" id="editMeetingTypeRemarks" rows="3" placeholder="Enter remarks"></textarea>
+                        <textarea class="form-control" id="editMeetingTypeRemarks" name="Remarks" rows="3" placeholder="Enter remarks"></textarea>
                     </div>
                 </form>
             </div>
@@ -181,7 +142,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle me-1"></i>Cancel
                 </button>
-                <button type="button" class="btn btn-info" onclick="updateMeetingType()">
+                <button type="submit" form="editMeetingTypeForm" class="btn btn-info">
                     <i class="bi bi-check-circle me-1"></i>Update
                 </button>
             </div>
@@ -193,23 +154,26 @@
 <div class="modal fade" id="deleteMeetingTypeModal" tabindex="-1" aria-labelledby="deleteMeetingTypeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteMeetingTypeModalLabel"><i class="bi bi-trash me-2"></i>Delete Meeting Type</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="deleteMeetingTypeId">
-                <p class="mb-0">Are you sure you want to delete the meeting type: <strong id="deleteMeetingTypeName"></strong>?</p>
-                <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i>Cancel
-                </button>
-                <button type="button" class="btn btn-danger" onclick="confirmDeleteMeetingType()">
-                    <i class="bi bi-trash me-1"></i>Delete
-                </button>
-            </div>
+            <form id="deleteMeetingTypeForm" asp-action="DeleteConfirmed" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteMeetingTypeModalLabel"><i class="bi bi-trash me-2"></i>Delete Meeting Type</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="deleteMeetingTypeIdInput" name="meetingTypeId">
+                    <p class="mb-0">Are you sure you want to delete the meeting type: <strong id="deleteMeetingTypeName"></strong>?</p>
+                    <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>Delete
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -262,46 +226,4 @@
     }
 </style>
 
-<script>
-    function editMeetingType(id, name, remarks) {
-        document.getElementById('editMeetingTypeId').value = id;
-        document.getElementById('editMeetingTypeName').value = name;
-        document.getElementById('editMeetingTypeRemarks').value = remarks;
-    }
-
-    function deleteMeetingType(id, name) {
-        document.getElementById('deleteMeetingTypeId').value = id;
-        document.getElementById('deleteMeetingTypeName').textContent = name;
-    }
-
-    function saveMeetingType() {
-        var name = document.getElementById('meetingTypeName').value;
-        if (name.trim() === '') {
-            document.getElementById('meetingTypeName').classList.add('is-invalid');
-            return;
-        }
-        alert('Meeting Type "' + name + '" added successfully!');
-        var modal = bootstrap.Modal.getInstance(document.getElementById('addMeetingTypeModal'));
-        modal.hide();
-        document.getElementById('meetingTypeName').value = '';
-        document.getElementById('meetingTypeRemarks').value = '';
-    }
-
-    function updateMeetingType() {
-        var name = document.getElementById('editMeetingTypeName').value;
-        if (name.trim() === '') {
-            document.getElementById('editMeetingTypeName').classList.add('is-invalid');
-            return;
-        }
-        alert('Meeting Type updated successfully!');
-        var modal = bootstrap.Modal.getInstance(document.getElementById('editMeetingTypeModal'));
-        modal.hide();
-    }
-
-    function confirmDeleteMeetingType() {
-        var name = document.getElementById('deleteMeetingTypeName').textContent;
-        alert('Meeting Type "' + name + '" deleted successfully!');
-        var modal = bootstrap.Modal.getInstance(document.getElementById('deleteMeetingTypeModal'));
-        modal.hide();
-    }
-</script>
+@* Modal population is handled globally in `Views/Shared/_Layout.cshtml` (initializePageBehaviors) *@

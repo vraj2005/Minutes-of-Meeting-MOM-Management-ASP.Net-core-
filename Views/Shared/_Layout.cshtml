@@ -214,7 +214,19 @@
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-        @RenderBody()
+        <!-- Loading Spinner -->
+        <div id="page-loader" style="display: none;">
+            <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Container -->
+        <div id="main-content">
+            @RenderBody()
+        </div>
     </main><!-- End #main -->
 
     <!-- ======= Footer ======= -->
@@ -241,6 +253,302 @@
 
     <!-- Template Main JS File -->
     <script src="~/assets/js/main.js"></script>
+
+    <script>
+        // Re-init page behaviors after AJAX navigation because scripts inside injected HTML won't run.
+        function initializePageBehaviors(root = document) {
+            // Department modals
+            const editDepartmentModal = root.getElementById?.('editDepartmentModal') ?? document.getElementById('editDepartmentModal');
+            if (editDepartmentModal && !editDepartmentModal.dataset.bound) {
+                editDepartmentModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+                    const idInput = document.getElementById('editDepartmentIdInput');
+                    const nameInput = document.getElementById('editDepartmentName');
+                    const remarksInput = document.getElementById('editDepartmentRemarks');
+
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameInput) nameInput.value = btn.getAttribute('data-name') || '';
+                    if (remarksInput) remarksInput.value = btn.getAttribute('data-remarks') || '';
+                });
+                editDepartmentModal.dataset.bound = 'true';
+            }
+
+            const deleteDepartmentModal = root.getElementById?.('deleteDepartmentModal') ?? document.getElementById('deleteDepartmentModal');
+            if (deleteDepartmentModal && !deleteDepartmentModal.dataset.bound) {
+                deleteDepartmentModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+                    const idInput = document.getElementById('deleteDepartmentIdInput');
+                    const nameEl = document.getElementById('deleteDepartmentName');
+
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameEl) nameEl.textContent = btn.getAttribute('data-name') || '';
+                });
+                deleteDepartmentModal.dataset.bound = 'true';
+            }
+
+            // Meeting Type modals
+            const editMeetingTypeModal = root.getElementById?.('editMeetingTypeModal') ?? document.getElementById('editMeetingTypeModal');
+            if (editMeetingTypeModal && !editMeetingTypeModal.dataset.bound) {
+                editMeetingTypeModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+
+                    const idInput = document.getElementById('editMeetingTypeId');
+                    const nameInput = document.getElementById('editMeetingTypeName');
+                    const remarksInput = document.getElementById('editMeetingTypeRemarks');
+
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameInput) nameInput.value = btn.getAttribute('data-name') || '';
+                    if (remarksInput) remarksInput.value = btn.getAttribute('data-remarks') || '';
+                });
+                editMeetingTypeModal.dataset.bound = 'true';
+            }
+
+            const deleteMeetingTypeModal = root.getElementById?.('deleteMeetingTypeModal') ?? document.getElementById('deleteMeetingTypeModal');
+            if (deleteMeetingTypeModal && !deleteMeetingTypeModal.dataset.bound) {
+                deleteMeetingTypeModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+
+                    const idInput = document.getElementById('deleteMeetingTypeIdInput');
+                    const nameEl = document.getElementById('deleteMeetingTypeName');
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameEl) nameEl.textContent = btn.getAttribute('data-name') || '';
+                });
+                deleteMeetingTypeModal.dataset.bound = 'true';
+            }
+
+            // Meeting Venue modals
+            const editVenueModal = root.getElementById?.('editVenueModal') ?? document.getElementById('editVenueModal');
+            if (editVenueModal && !editVenueModal.dataset.bound) {
+                editVenueModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+
+                    const idInput = document.getElementById('editVenueId');
+                    const nameInput = document.getElementById('editVenueName');
+                    const remarksInput = document.getElementById('editVenueRemarks');
+
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameInput) nameInput.value = btn.getAttribute('data-name') || '';
+                    if (remarksInput) remarksInput.value = btn.getAttribute('data-remarks') || '';
+                });
+                editVenueModal.dataset.bound = 'true';
+            }
+
+            const deleteVenueModal = root.getElementById?.('deleteVenueModal') ?? document.getElementById('deleteVenueModal');
+            if (deleteVenueModal && !deleteVenueModal.dataset.bound) {
+                deleteVenueModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+
+                    const idInput = document.getElementById('deleteVenueIdInput');
+                    const nameEl = document.getElementById('deleteVenueName');
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameEl) nameEl.textContent = btn.getAttribute('data-name') || '';
+                });
+                deleteVenueModal.dataset.bound = 'true';
+            }
+
+            // Staff delete modal (uses function deleteStaff in view, but ensure hidden input always exists)
+            const deleteStaffModal = root.getElementById?.('deleteStaffModal') ?? document.getElementById('deleteStaffModal');
+            if (deleteStaffModal && !deleteStaffModal.dataset.bound) {
+                deleteStaffModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+
+                    const staffId = btn.getAttribute('data-id');
+                    const staffName = btn.getAttribute('data-name');
+                    const idInput = document.getElementById('deleteStaffIdInput');
+                    const nameEl = document.getElementById('deleteStaffName');
+                    if (idInput && staffId) idInput.value = staffId;
+                    if (nameEl && staffName) nameEl.textContent = staffName;
+                });
+                deleteStaffModal.dataset.bound = 'true';
+            }
+
+            // Meetings delete modal
+            const deleteMeetingModal = root.getElementById?.('deleteMeetingModal') ?? document.getElementById('deleteMeetingModal');
+            if (deleteMeetingModal && !deleteMeetingModal.dataset.bound) {
+                deleteMeetingModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+                    const idInput = document.getElementById('deleteMeetingId');
+                    const nameEl = document.getElementById('deleteMeetingName');
+
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || idInput.value;
+                    if (nameEl) nameEl.textContent = btn.getAttribute('data-name') || nameEl.textContent;
+                });
+                deleteMeetingModal.dataset.bound = 'true';
+            }
+
+            // MeetingMember (Attendance) delete modal
+            const deleteMemberModal = root.getElementById?.('deleteMemberModal') ?? document.getElementById('deleteMemberModal');
+            if (deleteMemberModal && !deleteMemberModal.dataset.bound) {
+                deleteMemberModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+                    const idInput = document.getElementById('deleteMemberId');
+                    const staffNameEl = document.getElementById('deleteStaffName');
+                    const meetingNameEl = document.getElementById('deleteMeetingName');
+
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || idInput.value;
+                    if (staffNameEl) staffNameEl.textContent = btn.getAttribute('data-staff') || staffNameEl.textContent;
+                    if (meetingNameEl) meetingNameEl.textContent = btn.getAttribute('data-meeting') || meetingNameEl.textContent;
+                });
+                deleteMemberModal.dataset.bound = 'true';
+            }
+        }
+    </script>
+
+    <!-- AJAX Navigation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all sidebar navigation links
+            const sidebarLinks = document.querySelectorAll('#sidebar-nav .nav-link');
+            const mainContent = document.getElementById('main-content');
+            const pageLoader = document.getElementById('page-loader');
+            
+            // Function to load page content via AJAX
+            async function loadPage(url, pushState = true) {
+                try {
+                    // Show loader, hide content
+                    pageLoader.style.display = 'block';
+                    mainContent.style.opacity = '0.3';
+                    
+                    // Fetch the page
+                    const response = await fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    if (!response.ok) throw new Error('Page not found');
+                    
+                    const html = await response.text();
+                    
+                    // Parse the response and extract main content
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newContent = doc.getElementById('main-content');
+                    
+                    if (newContent) {
+                        // Update the main content
+                        mainContent.innerHTML = newContent.innerHTML;
+                        
+                        // Update page title
+                        const newTitle = doc.querySelector('title');
+                        if (newTitle) {
+                            document.title = newTitle.textContent;
+                        }
+                        
+                        // Update browser URL without reload
+                        if (pushState) {
+                            history.pushState({ url: url }, '', url);
+                        }
+                        
+                        // Update active state in sidebar
+                        updateActiveLink(url);
+                        
+                        // Re-initialize DataTables if present
+                        initializeDataTables();
+
+                         // Re-initialize page-level behaviors (modals, etc.)
+                         initializePageBehaviors(document);
+                        
+                        // Scroll to top of content
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                } catch (error) {
+                    console.error('Error loading page:', error);
+                    // Fallback to normal navigation on error
+                    window.location.href = url;
+                } finally {
+                    // Hide loader, show content
+                    pageLoader.style.display = 'none';
+                    mainContent.style.opacity = '1';
+                }
+            }
+            
+            // Function to update active link in sidebar
+            function updateActiveLink(url) {
+                sidebarLinks.forEach(link => {
+                    link.classList.remove('active');
+                    link.classList.add('collapsed');
+                    
+                    const linkUrl = link.getAttribute('href');
+                    if (linkUrl && url.includes(linkUrl)) {
+                        link.classList.add('active');
+                        link.classList.remove('collapsed');
+                    }
+                });
+            }
+            
+            // Function to initialize DataTables
+            function initializeDataTables() {
+                const datatables = document.querySelectorAll('.datatable');
+                datatables.forEach(table => {
+                    if (!table.classList.contains('datatable-initialized')) {
+                        new simpleDatatables.DataTable(table, {
+                            perPageSelect: [5, 10, 15, 20, 25],
+                            perPage: 10
+                        });
+                        table.classList.add('datatable-initialized');
+                    }
+                });
+            }
+            
+            // Attach click handlers to sidebar links
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const url = this.getAttribute('href');
+                    
+                    // Only intercept internal links
+                    if (url && !url.startsWith('http') && !url.startsWith('#')) {
+                        e.preventDefault();
+                        loadPage(url);
+                    }
+                });
+            });
+            
+            // Handle browser back/forward buttons
+            window.addEventListener('popstate', function(e) {
+                if (e.state && e.state.url) {
+                    loadPage(e.state.url, false);
+                } else {
+                    loadPage(window.location.pathname, false);
+                }
+            });
+            
+            // Set initial state
+            history.replaceState({ url: window.location.pathname }, '', window.location.pathname);
+            
+            // Update active link on initial load
+            updateActiveLink(window.location.pathname);
+
+            // Initialize behaviors on first load
+            initializePageBehaviors(document);
+        });
+    </script>
+
+    <style>
+        /* Smooth transition for content loading */
+        #main-content {
+            transition: opacity 0.2s ease-in-out;
+        }
+        
+        /* Active sidebar link styling */
+        #sidebar-nav .nav-link.active {
+            background: #f6f9ff;
+            color: #4154f1;
+        }
+        
+        #sidebar-nav .nav-link.active i {
+            color: #4154f1;
+        }
+    </style>
 
 </body>
 

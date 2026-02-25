@@ -33,8 +33,8 @@
                         <dd class="col-sm-9">@Model.MobileNo</dd>
                     </dl>
 
-                    <form method="post" class="mt-4">
-                        <input type="hidden" asp-for="StaffID" />
+                    <form method="post" asp-action="DeleteConfirmed" class="mt-4">
+                        <input type="hidden" name="staffId" value="@Model.StaffID" />
                         <button type="submit" class="btn btn-danger">
                             <i class="bi bi-trash"></i> Delete
                         </button>

@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<MOM_Project.Models.Department>
+
+@{
     ViewData["Title"] = "Departments";
 }
 
@@ -14,6 +16,13 @@
 </div><!-- End Page Title -->
 
 <section class="section">
+    @if (TempData["ErrorMessage"] is string errorMessage && !string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @errorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -37,76 +46,30 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-center fw-bold">1</td>
-                                    <td><span class="fw-500">Human Resources</span></td>
-                                    <td class="text-center">01/01/2026</td>
-                                    <td class="text-center">05/01/2026</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" onclick="editDepartment(1, 'Human Resources')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" onclick="deleteDepartment(1, 'Human Resources')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">2</td>
-                                    <td><span class="fw-500">Finance</span></td>
-                                    <td class="text-center">02/01/2026</td>
-                                    <td class="text-center">04/01/2026</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" onclick="editDepartment(2, 'Finance')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" onclick="deleteDepartment(2, 'Finance')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">3</td>
-                                    <td><span class="fw-500">Information Technology</span></td>
-                                    <td class="text-center">03/01/2026</td>
-                                    <td class="text-center">06/01/2026</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" onclick="editDepartment(3, 'Information Technology')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" onclick="deleteDepartment(3, 'Information Technology')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">4</td>
-                                    <td><span class="fw-500">Operations</span></td>
-                                    <td class="text-center">04/01/2026</td>
-                                    <td class="text-center">05/01/2026</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" onclick="editDepartment(4, 'Operations')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" onclick="deleteDepartment(4, 'Operations')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">5</td>
-                                    <td><span class="fw-500">Marketing</span></td>
-                                    <td class="text-center">05/01/2026</td>
-                                    <td class="text-center">06/01/2026</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" onclick="editDepartment(5, 'Marketing')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" onclick="deleteDepartment(5, 'Marketing')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                @{
+                                    var rowIndex = 0;
+                                }
+                                @if (Model != null)
+                                {
+                                    foreach (var department in Model)
+                                {
+                                    rowIndex++;
+                                    <tr>
+                                        <td class="text-center fw-bold">@rowIndex</td>
+                                        <td><span class="fw-500">@department.DepartmentName</span></td>
+                                        <td class="text-center">@department.Created.ToString("dd/MM/yyyy")</td>
+                                        <td class="text-center">@department.Modified.ToString("dd/MM/yyyy")</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" data-id="@department.DepartmentID" data-name="@department.DepartmentName" data-remarks="@(department.Remarks ?? string.Empty)">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id="@department.DepartmentID" data-name="@department.DepartmentName">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -125,10 +88,10 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addDepartmentForm">
+                <form id="addDepartmentForm" asp-action="Create" method="post">
                     <div class="mb-3">
                         <label for="departmentName" class="form-label">Department Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="departmentName" placeholder="Enter department name" required>
+                        <input type="text" class="form-control" id="departmentName" name="DepartmentName" placeholder="Enter department name" required>
                         <div class="invalid-feedback">Please enter department name.</div>
                     </div>
                 </form>
@@ -137,7 +100,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle me-1"></i>Cancel
                 </button>
-                <button type="button" class="btn btn-primary" onclick="saveDepartment()">
+                <button type="submit" form="addDepartmentForm" class="btn btn-primary">
                     <i class="bi bi-check-circle me-1"></i>Save
                 </button>
             </div>
@@ -154,12 +117,17 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editDepartmentForm">
-                    <input type="hidden" id="editDepartmentId">
+                <form id="editDepartmentForm" asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editDepartmentIdInput" name="DepartmentID">
                     <div class="mb-3">
                         <label for="editDepartmentName" class="form-label">Department Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="editDepartmentName" placeholder="Enter department name" required>
+                        <input type="text" class="form-control" id="editDepartmentName" name="DepartmentName" placeholder="Enter department name" required>
                         <div class="invalid-feedback">Please enter department name.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDepartmentRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="editDepartmentRemarks" name="Remarks" rows="3" placeholder="Enter remarks"></textarea>
                     </div>
                 </form>
             </div>
@@ -167,7 +135,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle me-1"></i>Cancel
                 </button>
-                <button type="button" class="btn btn-info" onclick="updateDepartment()">
+                <button type="submit" form="editDepartmentForm" class="btn btn-info">
                     <i class="bi bi-check-circle me-1"></i>Update
                 </button>
             </div>
@@ -179,23 +147,26 @@
 <div class="modal fade" id="deleteDepartmentModal" tabindex="-1" aria-labelledby="deleteDepartmentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteDepartmentModalLabel"><i class="bi bi-trash me-2"></i>Delete Department</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="deleteDepartmentId">
-                <p class="mb-0">Are you sure you want to delete the department: <strong id="deleteDepartmentName"></strong>?</p>
-                <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i>Cancel
-                </button>
-                <button type="button" class="btn btn-danger" onclick="confirmDeleteDepartment()">
-                    <i class="bi bi-trash me-1"></i>Delete
-                </button>
-            </div>
+            <form id="deleteDepartmentForm" asp-action="DeleteConfirmed" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteDepartmentModalLabel"><i class="bi bi-trash me-2"></i>Delete Department</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="deleteDepartmentIdInput" name="departmentId">
+                    <p class="mb-0">Are you sure you want to delete the department: <strong id="deleteDepartmentName"></strong>?</p>
+                    <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>Delete
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -258,46 +229,28 @@
 </style>
 
 <script>
-    function editDepartment(id, name) {
-        document.getElementById('editDepartmentId').value = id;
-        document.getElementById('editDepartmentName').value = name;
-    }
+    (function () {
+        var editModal = document.getElementById('editDepartmentModal');
+        if (editModal) {
+            editModal.addEventListener('show.bs.modal', function (event) {
+                var btn = event.relatedTarget;
+                if (!btn) return;
 
-    function deleteDepartment(id, name) {
-        document.getElementById('deleteDepartmentId').value = id;
-        document.getElementById('deleteDepartmentName').textContent = name;
-    }
-
-    function saveDepartment() {
-        var name = document.getElementById('departmentName').value;
-        if (name.trim() === '') {
-            document.getElementById('departmentName').classList.add('is-invalid');
-            return;
+                document.getElementById('editDepartmentIdInput').value = btn.getAttribute('data-id') || '';
+                document.getElementById('editDepartmentName').value = btn.getAttribute('data-name') || '';
+                document.getElementById('editDepartmentRemarks').value = btn.getAttribute('data-remarks') || '';
+            });
         }
-        // Static: Just close modal (would submit to server in real app)
-        alert('Department "' + name + '" added successfully!');
-        var modal = bootstrap.Modal.getInstance(document.getElementById('addDepartmentModal'));
-        modal.hide();
-        document.getElementById('departmentName').value = '';
-    }
 
-    function updateDepartment() {
-        var name = document.getElementById('editDepartmentName').value;
-        if (name.trim() === '') {
-            document.getElementById('editDepartmentName').classList.add('is-invalid');
-            return;
+        var deleteModal = document.getElementById('deleteDepartmentModal');
+        if (deleteModal) {
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                var btn = event.relatedTarget;
+                if (!btn) return;
+
+                document.getElementById('deleteDepartmentIdInput').value = btn.getAttribute('data-id') || '';
+                document.getElementById('deleteDepartmentName').textContent = btn.getAttribute('data-name') || '';
+            });
         }
-        // Static: Just close modal (would submit to server in real app)
-        alert('Department updated successfully!');
-        var modal = bootstrap.Modal.getInstance(document.getElementById('editDepartmentModal'));
-        modal.hide();
-    }
-
-    function confirmDeleteDepartment() {
-        var name = document.getElementById('deleteDepartmentName').textContent;
-        // Static: Just close modal (would submit to server in real app)
-        alert('Department "' + name + '" deleted successfully!');
-        var modal = bootstrap.Modal.getInstance(document.getElementById('deleteDepartmentModal'));
-        modal.hide();
-    }
+    })();
 </script>

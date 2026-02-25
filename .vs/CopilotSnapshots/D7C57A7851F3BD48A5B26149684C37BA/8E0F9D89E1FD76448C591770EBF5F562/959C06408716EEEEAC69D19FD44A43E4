@@ -1,0 +1,134 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using MOM_Project.Models;
+using System.Data;
+
+namespace MOM_Project.Controllers
+{
+    public class DepartmentController : Controller
+    {
+        private readonly string _connectionString;
+
+        public DepartmentController(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("MOM_DB")
+                ?? throw new InvalidOperationException("Connection string 'MOM_DB' not found.");
+        }
+
+        public IActionResult Index()
+        {
+            var departments = new List<Department>();
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("PR_MOM_Department_SelectAll", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                departments.Add(new Department
+                {
+                    DepartmentID = reader.GetInt32(reader.GetOrdinal("DepartmentID")),
+                    DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName")),
+                    Remarks = reader.IsDBNull(reader.GetOrdinal("Remarks")) ? null : reader.GetString(reader.GetOrdinal("Remarks")),
+                    Created = reader.GetDateTime(reader.GetOrdinal("Created")),
+                    Modified = reader.GetDateTime(reader.GetOrdinal("Modified"))
+                });
+            }
+
+            return View(departments);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Department department)
+        {
+            if (string.IsNullOrWhiteSpace(department.DepartmentName))
+            {
+                ModelState.AddModelError(nameof(department.DepartmentName), "Department name is required.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("PR_MOM_Department_Insert", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            command.Parameters.AddWithValue("@DepartmentName", department.DepartmentName.Trim());
+            command.Parameters.AddWithValue("@Remarks", (object?)department.Remarks ?? DBNull.Value);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Edit(int id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Department department)
+        {
+            if (department.DepartmentID <= 0 || string.IsNullOrWhiteSpace(department.DepartmentName))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("PR_MOM_Department_UpdateByPK", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            command.Parameters.AddWithValue("@DepartmentID", department.DepartmentID);
+            command.Parameters.AddWithValue("@DepartmentName", department.DepartmentName.Trim());
+            command.Parameters.AddWithValue("@Remarks", (object?)department.Remarks ?? DBNull.Value);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int departmentId)
+        {
+            if (departmentId <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("PR_MOM_Department_DeleteByPK", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            command.Parameters.AddWithValue("@DepartmentID", departmentId);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}

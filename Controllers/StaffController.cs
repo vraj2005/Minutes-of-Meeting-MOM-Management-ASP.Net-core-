@@ -1,12 +1,54 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using MOM_Project.Models;
+using System.Data;
 
 namespace MOM_Project.Controllers
 {
     public class StaffController : Controller
     {
+        private readonly string _connectionString;
+
+        public StaffController(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("MOM_DB")
+                ?? throw new InvalidOperationException("Connection string 'MOM_DB' not found.");
+        }
+
         public IActionResult Index()
         {
-            return View();
+            var departments = LoadDepartments();
+            var staffMembers = new List<Staff>();
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("dbo.PR_MOM_Staff_SelectAll", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var departmentName = reader.GetString(reader.GetOrdinal("DepartmentName"));
+                var department = departments.FirstOrDefault(d => d.DepartmentName == departmentName);
+
+                staffMembers.Add(new Staff
+                {
+                    StaffID = reader.GetInt32(reader.GetOrdinal("StaffID")),
+                    StaffName = reader.GetString(reader.GetOrdinal("StaffName")),
+                    MobileNo = reader.IsDBNull(reader.GetOrdinal("Mobile")) ? null : reader.GetString(reader.GetOrdinal("Mobile")),
+                    EmailAddress = reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString(reader.GetOrdinal("Email")),
+                    Remarks = reader.IsDBNull(reader.GetOrdinal("Remarks")) ? null : reader.GetString(reader.GetOrdinal("Remarks")),
+                    Created = reader.GetDateTime(reader.GetOrdinal("Created")),
+                    DepartmentName = departmentName,
+                    DepartmentID = department?.DepartmentID ?? 0
+                });
+            }
+
+            ViewBag.Departments = departments;
+            return View(staffMembers);
         }
 
         public IActionResult Create()
@@ -14,14 +56,184 @@ namespace MOM_Project.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Staff staff)
+        {
+            if (string.IsNullOrWhiteSpace(staff.StaffName) || staff.DepartmentID <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("dbo.PR_MOM_Staff_Insert", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            command.Parameters.AddWithValue("@DepartmentID", staff.DepartmentID);
+            command.Parameters.AddWithValue("@StaffName", staff.StaffName.Trim());
+            command.Parameters.AddWithValue("@Mobile", (object?)staff.MobileNo ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Email", (object?)staff.EmailAddress ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Remarks", (object?)staff.Remarks ?? DBNull.Value);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult Edit(int id)
         {
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Staff staff)
+        {
+            if (staff.StaffID <= 0 || staff.DepartmentID <= 0 || string.IsNullOrWhiteSpace(staff.StaffName))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("dbo.PR_MOM_Staff_UpdateByPK", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            command.Parameters.AddWithValue("@StaffID", staff.StaffID);
+            command.Parameters.AddWithValue("@DepartmentID", staff.DepartmentID);
+            command.Parameters.AddWithValue("@StaffName", staff.StaffName.Trim());
+            command.Parameters.AddWithValue("@Mobile", (object?)staff.MobileNo ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Email", (object?)staff.EmailAddress ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Remarks", (object?)staff.Remarks ?? DBNull.Value);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult Delete(int id)
         {
-            return View();
+            if (id <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var staff = GetStaffById(id);
+            if (staff is null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(staff);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int staffId)
+        {
+            if (staffId <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("dbo.PR_MOM_Staff_DeleteByPK", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@StaffID", staffId);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch (SqlException ex) when (ex.Number is 547)
+            {
+                TempData["ErrorMessage"] = "Cannot delete this staff member because it is being used in other records (e.g., Attendance/Meeting Members). Remove dependent records first.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to delete staff member.");
+                var staff = GetStaffById(staffId);
+                if (staff is null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View("Delete", staff);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private Staff? GetStaffById(int staffId)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("dbo.PR_MOM_Staff_SelectByPK", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@StaffID", staffId);
+
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                if (!reader.Read())
+                {
+                    return null;
+                }
+
+                return new Staff
+                {
+                    StaffID = reader.GetInt32(reader.GetOrdinal("StaffID")),
+                    DepartmentID = reader.GetInt32(reader.GetOrdinal("DepartmentID")),
+                    StaffName = reader.GetString(reader.GetOrdinal("StaffName")),
+                    MobileNo = reader.IsDBNull(reader.GetOrdinal("Mobile")) ? null : reader.GetString(reader.GetOrdinal("Mobile")),
+                    EmailAddress = reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString(reader.GetOrdinal("Email")),
+                    Remarks = reader.IsDBNull(reader.GetOrdinal("Remarks")) ? null : reader.GetString(reader.GetOrdinal("Remarks")),
+                    Created = reader.GetDateTime(reader.GetOrdinal("Created")),
+                    Modified = reader.GetDateTime(reader.GetOrdinal("Modified"))
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private List<Department> LoadDepartments()
+        {
+            var departments = new List<Department>();
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("dbo.PR_MOM_Department_SelectAll", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                departments.Add(new Department
+                {
+                    DepartmentID = reader.GetInt32(reader.GetOrdinal("DepartmentID")),
+                    DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName"))
+                });
+            }
+
+            return departments;
         }
     }
 }

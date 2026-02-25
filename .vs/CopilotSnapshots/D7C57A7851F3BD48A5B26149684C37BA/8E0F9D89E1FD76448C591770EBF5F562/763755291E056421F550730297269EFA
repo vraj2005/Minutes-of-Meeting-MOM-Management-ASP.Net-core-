@@ -1,0 +1,243 @@
+﻿@model IEnumerable<MOM_Project.Models.MeetingVenue>
+
+@{
+    ViewData["Title"] = "Meeting Venues";
+}
+
+<div class="pagetitle">
+    <h1>Meeting Venues</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item">Master Data</li>
+            <li class="breadcrumb-item active">Meeting Venues</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Venue List</h5>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addVenueModal">
+                            <i class="bi bi-plus-circle"></i> Add Venue
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover datatable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 60px;"><b>#</b></th>
+                                    <th><b>Venue Name</b></th>
+                                    <th><b>Remarks</b></th>
+                                    <th class="text-center" style="width: 150px;"><b>Created</b></th>
+                                    <th class="text-center" style="width: 150px;"><b>Modified</b></th>
+                                    <th class="text-center" style="width: 120px;"><b>Actions</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var rowIndex = 0;
+                                }
+                                @if (Model != null)
+                                {
+                                    foreach (var venue in Model)
+                                    {
+                                        rowIndex++;
+                                        <tr>
+                                            <td class="text-center fw-bold">@rowIndex</td>
+                                            <td><span class="fw-500">@venue.MeetingVenueName</span></td>
+                                            <td>@venue.Remarks</td>
+                                            <td class="text-center">@venue.Created.ToString("dd/MM/yyyy")</td>
+                                            <td class="text-center">@venue.Modified.ToString("dd/MM/yyyy")</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editVenueModal" onclick="editVenue(@venue.MeetingVenueID, '@venue.MeetingVenueName', '@(venue.Remarks ?? string.Empty)')">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteVenueModal" onclick="deleteVenue(@venue.MeetingVenueID, '@venue.MeetingVenueName')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Venue Modal -->
+<div class="modal fade" id="addVenueModal" tabindex="-1" aria-labelledby="addVenueModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addVenueModalLabel"><i class="bi bi-plus-circle me-2"></i>Add Venue</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addVenueForm" asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="venueName" class="form-label">Venue Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="venueName" name="MeetingVenueName" placeholder="Enter venue name" required>
+                        <div class="invalid-feedback">Please enter venue name.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="venueRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="venueRemarks" name="Remarks" rows="3" placeholder="Enter remarks"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" form="addVenueForm" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Venue Modal -->
+<div class="modal fade" id="editVenueModal" tabindex="-1" aria-labelledby="editVenueModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editVenueModalLabel"><i class="bi bi-pencil me-2"></i>Edit Venue</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editVenueForm" asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editVenueId" name="MeetingVenueID">
+                    <div class="mb-3">
+                        <label for="editVenueName" class="form-label">Venue Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="editVenueName" name="MeetingVenueName" placeholder="Enter venue name" required>
+                        <div class="invalid-feedback">Please enter venue name.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editVenueRemarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="editVenueRemarks" name="Remarks" rows="3" placeholder="Enter remarks"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" form="editVenueForm" class="btn btn-info">
+                    <i class="bi bi-check-circle me-1"></i>Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Venue Modal -->
+<div class="modal fade" id="deleteVenueModal" tabindex="-1" aria-labelledby="deleteVenueModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteVenueForm" asp-action="DeleteConfirmed" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteVenueModalLabel"><i class="bi bi-trash me-2"></i>Delete Venue</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="deleteVenueIdInput" name="meetingVenueId">
+                    <p class="mb-0">Are you sure you want to delete the venue: <strong id="deleteVenueName"></strong>?</p>
+                    <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        background-color: #f6f9ff;
+        color: #012970;
+        font-weight: 600;
+        border-bottom: 2px solid #ebeef4;
+        padding: 15px;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f9fbff;
+        transition: background-color 0.2s ease;
+    }
+
+    .table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ebeef4;
+        vertical-align: middle;
+    }
+
+    .fw-500 {
+        font-weight: 500;
+        color: #012970;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+        color: #fff;
+    }
+
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+
+    .btn-primary:hover {
+        background-color: #3144d9;
+        border-color: #2836c0;
+    }
+
+    .modal-header {
+        border-radius: 0;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #012970;
+    }
+</style>
+
+<script>
+    function editVenue(id, name, remarks) {
+        document.getElementById('editVenueId').value = id;
+        document.getElementById('editVenueName').value = name;
+        document.getElementById('editVenueRemarks').value = remarks;
+    }
+
+    function deleteVenue(id, name) {
+        document.getElementById('deleteVenueId').value = id;
+        document.getElementById('deleteVenueIdInput').value = id;
+        document.getElementById('deleteVenueName').textContent = name;
+    }
+</script>

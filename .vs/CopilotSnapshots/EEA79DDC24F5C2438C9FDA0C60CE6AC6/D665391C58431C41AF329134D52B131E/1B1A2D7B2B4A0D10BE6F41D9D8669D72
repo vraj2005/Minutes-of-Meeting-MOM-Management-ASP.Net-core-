@@ -1,0 +1,506 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>@ViewData["Title"] - MOM Management</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+    
+    <!-- Favicons -->
+    <link href="~/assets/img/favicon.png" rel="icon">
+    <link href="~/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="~/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="~/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="~/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="~/assets/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+
+        <div class="d-flex align-items-center justify-content-between">
+            <a asp-controller="Home" asp-action="Index" class="logo d-flex align-items-center">
+                <img src="~/assets/img/logo.png" alt="">
+                <span class="d-none d-lg-block">MOM Management</span>
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div><!-- End Logo -->
+
+        <div class="search-bar">
+            <form class="search-form d-flex align-items-center" method="POST" action="#">
+                <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+            </form>
+        </div><!-- End Search Bar -->
+
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+
+                <li class="nav-item d-block d-lg-none">
+                    <a class="nav-link nav-icon search-bar-toggle " href="#">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </li><!-- End Search Icon-->
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge bg-primary badge-number">4</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                        <li class="dropdown-header">
+                            You have 4 new notifications
+                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="notification-item">
+                            <i class="bi bi-calendar-check text-success"></i>
+                            <div>
+                                <h4>New Meeting Scheduled</h4>
+                                <p>Q4 Planning Meeting - Tomorrow 10 AM</p>
+                                <p>30 min. ago</p>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="notification-item">
+                            <i class="bi bi-person-plus text-primary"></i>
+                            <div>
+                                <h4>New Staff Added</h4>
+                                <p>John Doe joined HR Department</p>
+                                <p>1 hr. ago</p>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="notification-item">
+                            <i class="bi bi-x-circle text-danger"></i>
+                            <div>
+                                <h4>Meeting Cancelled</h4>
+                                <p>Training Workshop has been cancelled</p>
+                                <p>2 hrs. ago</p>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="notification-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <div>
+                                <h4>Attendance Marked</h4>
+                                <p>Budget Review attendance completed</p>
+                                <p>4 hrs. ago</p>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="dropdown-footer">
+                            <a href="#">Show all notifications</a>
+                        </li>
+                    </ul>
+                </li><!-- End Notification Nav -->
+
+                <li class="nav-item dropdown pe-3">
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        <img src="~/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                        <span class="d-none d-md-block dropdown-toggle ps-2">Admin User</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li class="dropdown-header">
+                            <h6>Admin User</h6>
+                            <span>System Administrator</span>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="bi bi-person"></i>
+                                <span>My Profile</span>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="bi bi-gear"></i>
+                                <span>Account Settings</span>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Sign Out</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li><!-- End Profile Nav -->
+
+            </ul>
+        </nav><!-- End Icons Navigation -->
+
+    </header><!-- End Header -->
+
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+
+            <li class="nav-heading">MASTER DATA</li>
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Department" asp-action="Index">
+                    <i class="bi bi-building"></i>
+                    <span>Departments</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="MeetingType" asp-action="Index">
+                    <i class="bi bi-collection"></i>
+                    <span>Meeting Types</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="MeetingVenue" asp-action="Index">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>Venues</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Staff" asp-action="Index">
+                    <i class="bi bi-people"></i>
+                    <span>Staff Members</span>
+                </a>
+            </li>
+
+            <li class="nav-heading">MEETINGS</li>
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Meetings" asp-action="Index">
+                    <i class="bi bi-calendar-event"></i>
+                    <span>All Meetings</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="MeetingMember" asp-action="Index">
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Attendance</span>
+                </a>
+            </li>
+
+        </ul>
+
+    </aside><!-- End Sidebar-->
+
+    <main id="main" class="main">
+        <!-- Loading Spinner -->
+        <div id="page-loader" style="display: none;">
+            <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Container -->
+        <div id="main-content">
+            @RenderBody()
+        </div>
+    </main><!-- End #main -->
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; Copyright <strong><span>MOM Management System</span></strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+            Designed with <i class="bi bi-heart-fill text-danger"></i> using Bootstrap 5
+        </div>
+    </footer><!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="~/assets/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/vendor/chart.js/chart.umd.js"></script>
+    <script src="~/assets/vendor/echarts/echarts.min.js"></script>
+    <script src="~/assets/vendor/quill/quill.js"></script>
+    <script src="~/assets/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="~/assets/vendor/tinymce/tinymce.min.js"></script>
+    <script src="~/assets/vendor/php-email-form/validate.js"></script>
+
+    <!-- Template Main JS File -->
+    <script src="~/assets/js/main.js"></script>
+
+    <script>
+        // Re-init page behaviors after AJAX navigation because scripts inside injected HTML won't run.
+        function initializePageBehaviors(root = document) {
+            // Department modals
+            const editDepartmentModal = root.getElementById?.('editDepartmentModal') ?? document.getElementById('editDepartmentModal');
+            if (editDepartmentModal && !editDepartmentModal.dataset.bound) {
+                editDepartmentModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+                    const idInput = document.getElementById('editDepartmentIdInput');
+                    const nameInput = document.getElementById('editDepartmentName');
+                    const remarksInput = document.getElementById('editDepartmentRemarks');
+
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameInput) nameInput.value = btn.getAttribute('data-name') || '';
+                    if (remarksInput) remarksInput.value = btn.getAttribute('data-remarks') || '';
+                });
+                editDepartmentModal.dataset.bound = 'true';
+            }
+
+            const deleteDepartmentModal = root.getElementById?.('deleteDepartmentModal') ?? document.getElementById('deleteDepartmentModal');
+            if (deleteDepartmentModal && !deleteDepartmentModal.dataset.bound) {
+                deleteDepartmentModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+                    const idInput = document.getElementById('deleteDepartmentIdInput');
+                    const nameEl = document.getElementById('deleteDepartmentName');
+
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameEl) nameEl.textContent = btn.getAttribute('data-name') || '';
+                });
+                deleteDepartmentModal.dataset.bound = 'true';
+            }
+
+            // Meeting Type modals
+            const editMeetingTypeModal = root.getElementById?.('editMeetingTypeModal') ?? document.getElementById('editMeetingTypeModal');
+            if (editMeetingTypeModal && !editMeetingTypeModal.dataset.bound) {
+                editMeetingTypeModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+
+                    const idInput = document.getElementById('editMeetingTypeId');
+                    const nameInput = document.getElementById('editMeetingTypeName');
+                    const remarksInput = document.getElementById('editMeetingTypeRemarks');
+
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameInput) nameInput.value = btn.getAttribute('data-name') || '';
+                    if (remarksInput) remarksInput.value = btn.getAttribute('data-remarks') || '';
+                });
+                editMeetingTypeModal.dataset.bound = 'true';
+            }
+
+            const deleteMeetingTypeModal = root.getElementById?.('deleteMeetingTypeModal') ?? document.getElementById('deleteMeetingTypeModal');
+            if (deleteMeetingTypeModal && !deleteMeetingTypeModal.dataset.bound) {
+                deleteMeetingTypeModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+
+                    const idInput = document.getElementById('deleteMeetingTypeIdInput');
+                    const nameEl = document.getElementById('deleteMeetingTypeName');
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameEl) nameEl.textContent = btn.getAttribute('data-name') || '';
+                });
+                deleteMeetingTypeModal.dataset.bound = 'true';
+            }
+
+            // Meeting Venue modals
+            const editVenueModal = root.getElementById?.('editVenueModal') ?? document.getElementById('editVenueModal');
+            if (editVenueModal && !editVenueModal.dataset.bound) {
+                editVenueModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+
+                    const idInput = document.getElementById('editVenueId');
+                    const nameInput = document.getElementById('editVenueName');
+                    const remarksInput = document.getElementById('editVenueRemarks');
+
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameInput) nameInput.value = btn.getAttribute('data-name') || '';
+                    if (remarksInput) remarksInput.value = btn.getAttribute('data-remarks') || '';
+                });
+                editVenueModal.dataset.bound = 'true';
+            }
+
+            const deleteVenueModal = root.getElementById?.('deleteVenueModal') ?? document.getElementById('deleteVenueModal');
+            if (deleteVenueModal && !deleteVenueModal.dataset.bound) {
+                deleteVenueModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    if (!btn) return;
+
+                    const idInput = document.getElementById('deleteVenueIdInput');
+                    const nameEl = document.getElementById('deleteVenueName');
+                    if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+                    if (nameEl) nameEl.textContent = btn.getAttribute('data-name') || '';
+                });
+                deleteVenueModal.dataset.bound = 'true';
+            }
+        }
+    </script>
+
+    <!-- AJAX Navigation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all sidebar navigation links
+            const sidebarLinks = document.querySelectorAll('#sidebar-nav .nav-link');
+            const mainContent = document.getElementById('main-content');
+            const pageLoader = document.getElementById('page-loader');
+            
+            // Function to load page content via AJAX
+            async function loadPage(url, pushState = true) {
+                try {
+                    // Show loader, hide content
+                    pageLoader.style.display = 'block';
+                    mainContent.style.opacity = '0.3';
+                    
+                    // Fetch the page
+                    const response = await fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    if (!response.ok) throw new Error('Page not found');
+                    
+                    const html = await response.text();
+                    
+                    // Parse the response and extract main content
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newContent = doc.getElementById('main-content');
+                    
+                    if (newContent) {
+                        // Update the main content
+                        mainContent.innerHTML = newContent.innerHTML;
+                        
+                        // Update page title
+                        const newTitle = doc.querySelector('title');
+                        if (newTitle) {
+                            document.title = newTitle.textContent;
+                        }
+                        
+                        // Update browser URL without reload
+                        if (pushState) {
+                            history.pushState({ url: url }, '', url);
+                        }
+                        
+                        // Update active state in sidebar
+                        updateActiveLink(url);
+                        
+                        // Re-initialize DataTables if present
+                        initializeDataTables();
+
+                         // Re-initialize page-level behaviors (modals, etc.)
+                         initializePageBehaviors(document);
+                        
+                        // Scroll to top of content
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                } catch (error) {
+                    console.error('Error loading page:', error);
+                    // Fallback to normal navigation on error
+                    window.location.href = url;
+                } finally {
+                    // Hide loader, show content
+                    pageLoader.style.display = 'none';
+                    mainContent.style.opacity = '1';
+                }
+            }
+            
+            // Function to update active link in sidebar
+            function updateActiveLink(url) {
+                sidebarLinks.forEach(link => {
+                    link.classList.remove('active');
+                    link.classList.add('collapsed');
+                    
+                    const linkUrl = link.getAttribute('href');
+                    if (linkUrl && url.includes(linkUrl)) {
+                        link.classList.add('active');
+                        link.classList.remove('collapsed');
+                    }
+                });
+            }
+            
+            // Function to initialize DataTables
+            function initializeDataTables() {
+                const datatables = document.querySelectorAll('.datatable');
+                datatables.forEach(table => {
+                    if (!table.classList.contains('datatable-initialized')) {
+                        new simpleDatatables.DataTable(table, {
+                            perPageSelect: [5, 10, 15, 20, 25],
+                            perPage: 10
+                        });
+                        table.classList.add('datatable-initialized');
+                    }
+                });
+            }
+            
+            // Attach click handlers to sidebar links
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const url = this.getAttribute('href');
+                    
+                    // Only intercept internal links
+                    if (url && !url.startsWith('http') && !url.startsWith('#')) {
+                        e.preventDefault();
+                        loadPage(url);
+                    }
+                });
+            });
+            
+            // Handle browser back/forward buttons
+            window.addEventListener('popstate', function(e) {
+                if (e.state && e.state.url) {
+                    loadPage(e.state.url, false);
+                } else {
+                    loadPage(window.location.pathname, false);
+                }
+            });
+            
+            // Set initial state
+            history.replaceState({ url: window.location.pathname }, '', window.location.pathname);
+            
+            // Update active link on initial load
+            updateActiveLink(window.location.pathname);
+
+            // Initialize behaviors on first load
+            initializePageBehaviors(document);
+        });
+    </script>
+
+    <style>
+        /* Smooth transition for content loading */
+        #main-content {
+            transition: opacity 0.2s ease-in-out;
+        }
+        
+        /* Active sidebar link styling */
+        #sidebar-nav .nav-link.active {
+            background: #f6f9ff;
+            color: #4154f1;
+        }
+        
+        #sidebar-nav .nav-link.active i {
+            color: #4154f1;
+        }
+    </style>
+
+</body>
+
+</html>

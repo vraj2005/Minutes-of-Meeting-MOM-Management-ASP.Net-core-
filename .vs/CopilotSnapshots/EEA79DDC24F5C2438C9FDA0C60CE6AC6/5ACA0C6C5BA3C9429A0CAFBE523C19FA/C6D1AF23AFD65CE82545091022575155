@@ -1,0 +1,386 @@
+﻿@model IEnumerable<MOM_Project.Models.Meeting>
+
+@{
+    ViewData["Title"] = "Meetings";
+    var departments = ViewBag.Departments as IEnumerable<MOM_Project.Models.Department>;
+    var meetingTypes = ViewBag.MeetingTypes as IEnumerable<MOM_Project.Models.MeetingType>;
+    var venues = ViewBag.MeetingVenues as IEnumerable<MOM_Project.Models.MeetingVenue>;
+}
+
+<div class="pagetitle">
+    <h1>Meetings</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item">Meeting Management</li>
+            <li class="breadcrumb-item active">All Meetings</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Meetings List</h5>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMeetingModal">
+                            <i class="bi bi-plus-circle"></i> Schedule Meeting
+                        </button>
+                    </div>
+
+                    <div class="table-responsive meeting-table-scroll">
+                        <table class="table table-hover datatable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 60px;"><b># </b></th>
+                                    <th><b>Meeting Description</b></th>
+                                    <th class="text-center"><b>Meeting Date</b></th>
+                                    <th><b>Venue</b></th>
+                                    <th><b>Type</b></th>
+                                    <th><b>Department</b></th>
+                                    <th><b>Document Path</b></th>
+                                    <th class="text-center"><b>Created</b></th>
+                                    <th class="text-center"><b>Modified</b></th>
+                                    <th class="text-center"><b>Is Cancelled</b></th>
+                                    <th class="text-center"><b>Cancellation Date</b></th>
+                                    <th><b>Cancellation Reason</b></th>
+                                    <th class="text-center" style="width: 120px;"><b>Actions</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var rowIndex = 0;
+                                }
+                                @if (Model != null)
+                                {
+                                    foreach (var meeting in Model)
+                                    {
+                                        rowIndex++;
+                                        <tr>
+                                            <td class="text-center fw-bold">@rowIndex</td>
+                                            <td><span class="fw-500">@meeting.MeetingDescription</span></td>
+                                            <td class="text-center">@meeting.MeetingDate</td>
+                                            <td>@(venues?.FirstOrDefault(v => v.MeetingVenueID == meeting.MeetingVenueID)?.MeetingVenueName)</td>
+                                            <td>@(meetingTypes?.FirstOrDefault(t => t.MeetingTypeID == meeting.MeetingTypeID)?.MeetingTypeName)</td>
+                                            <td>@(departments?.FirstOrDefault(d => d.DepartmentID == meeting.DepartmentID)?.DepartmentName)</td>
+                                            <td>@meeting.DocumentPath</td>
+                                            <td class="text-center">@meeting.Created</td>
+                                            <td class="text-center">@meeting.Modified</td>
+                                            <td class="text-center">@(meeting.IsCancelled == true ? "Yes" : "No")</td>
+                                            <td class="text-center">@(meeting.CancellationDateTime.HasValue ? meeting.CancellationDateTime : "-")</td>
+                                            <td>@(string.IsNullOrWhiteSpace(meeting.CancellationReason) ? "-" : meeting.CancellationReason)</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingModal" onclick="editMeeting(@meeting.MeetingID, '@(meeting.MeetingDescription ?? string.Empty)', '@meeting.MeetingDate.ToString("yyyy-MM-ddTHH:mm")', @meeting.MeetingVenueID, @meeting.MeetingTypeID, @meeting.DepartmentID, '@(meeting.DocumentPath ?? string.Empty)')">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingModal" data-id="@meeting.MeetingID" data-name="@(meeting.MeetingDescription ?? string.Empty)" onclick="deleteMeeting(@meeting.MeetingID, '@(meeting.MeetingDescription ?? string.Empty)')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Meeting Modal -->
+<div class="modal fade" id="addMeetingModal" tabindex="-1" aria-labelledby="addMeetingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addMeetingModalLabel"><i class="bi bi-calendar-plus me-2"></i>Schedule New Meeting</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addMeetingForm" asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="meetingDescription" class="form-label">Meeting Description <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="meetingDescription" name="MeetingDescription" placeholder="Enter meeting description" required>
+                            <div class="invalid-feedback">Please enter meeting description.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="meetingDate" class="form-label">Date & Time <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="meetingDate" name="MeetingDate" required>
+                            <div class="invalid-feedback">Please select date and time.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="meetingVenueId" class="form-label">Venue <span class="text-danger">*</span></label>
+                            <select class="form-select" id="meetingVenueId" name="MeetingVenueID" required>
+                                <option value="">Select Venue</option>
+                                @if (ViewBag.MeetingVenues != null)
+                                {
+                                    foreach (var venue in (IEnumerable<MOM_Project.Models.MeetingVenue>)ViewBag.MeetingVenues)
+                                    {
+                                        <option value="@venue.MeetingVenueID">@venue.MeetingVenueName</option>
+                                    }
+                                }
+                            </select>
+                            <div class="invalid-feedback">Please select a venue.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="meetingTypeId" class="form-label">Meeting Type <span class="text-danger">*</span></label>
+                            <select class="form-select" id="meetingTypeId" name="MeetingTypeID" required>
+                                <option value="">Select Meeting Type</option>
+                                @if (ViewBag.MeetingTypes != null)
+                                {
+                                    foreach (var type in (IEnumerable<MOM_Project.Models.MeetingType>)ViewBag.MeetingTypes)
+                                    {
+                                        <option value="@type.MeetingTypeID">@type.MeetingTypeName</option>
+                                    }
+                                }
+                            </select>
+                            <div class="invalid-feedback">Please select meeting type.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="meetingDepartmentId" class="form-label">Department <span class="text-danger">*</span></label>
+                            <select class="form-select" id="meetingDepartmentId" name="DepartmentID" required>
+                                <option value="">Select Department</option>
+                                @if (ViewBag.Departments != null)
+                                {
+                                    foreach (var department in (IEnumerable<MOM_Project.Models.Department>)ViewBag.Departments)
+                                    {
+                                        <option value="@department.DepartmentID">@department.DepartmentName</option>
+                                    }
+                                }
+                            </select>
+                            <div class="invalid-feedback">Please select department.</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentPath" class="form-label">Document Path</label>
+                        <input type="text" class="form-control" id="documentPath" name="DocumentPath" placeholder="Enter document path (optional)">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" form="addMeetingForm" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i>Schedule
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Meeting Modal -->
+<div class="modal fade" id="editMeetingModal" tabindex="-1" aria-labelledby="editMeetingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editMeetingModalLabel"><i class="bi bi-pencil me-2"></i>Edit Meeting</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editMeetingForm" asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editMeetingId" name="MeetingID">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="editMeetingDescription" class="form-label">Meeting Description <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editMeetingDescription" name="MeetingDescription" placeholder="Enter meeting description" required>
+                            <div class="invalid-feedback">Please enter meeting description.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editMeetingDate" class="form-label">Date & Time <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="editMeetingDate" name="MeetingDate" required>
+                            <div class="invalid-feedback">Please select date and time.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editMeetingVenueId" class="form-label">Venue <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editMeetingVenueId" name="MeetingVenueID" required>
+                                <option value="">Select Venue</option>
+                                @if (ViewBag.MeetingVenues != null)
+                                {
+                                    foreach (var venue in (IEnumerable<MOM_Project.Models.MeetingVenue>)ViewBag.MeetingVenues)
+                                    {
+                                        <option value="@venue.MeetingVenueID">@venue.MeetingVenueName</option>
+                                    }
+                                }
+                            </select>
+                            <div class="invalid-feedback">Please select a venue.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editMeetingTypeId" class="form-label">Meeting Type <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editMeetingTypeId" name="MeetingTypeID" required>
+                                <option value="">Select Meeting Type</option>
+                                @if (ViewBag.MeetingTypes != null)
+                                {
+                                    foreach (var type in (IEnumerable<MOM_Project.Models.MeetingType>)ViewBag.MeetingTypes)
+                                    {
+                                        <option value="@type.MeetingTypeID">@type.MeetingTypeName</option>
+                                    }
+                                }
+                            </select>
+                            <div class="invalid-feedback">Please select meeting type.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editMeetingDepartmentId" class="form-label">Department <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editMeetingDepartmentId" name="DepartmentID" required>
+                                <option value="">Select Department</option>
+                                @if (ViewBag.Departments != null)
+                                {
+                                    foreach (var department in (IEnumerable<MOM_Project.Models.Department>)ViewBag.Departments)
+                                    {
+                                        <option value="@department.DepartmentID">@department.DepartmentName</option>
+                                    }
+                                }
+                            </select>
+                            <div class="invalid-feedback">Please select department.</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDocumentPath" class="form-label">Document Path</label>
+                        <input type="text" class="form-control" id="editDocumentPath" name="DocumentPath" placeholder="Enter document path (optional)">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" form="editMeetingForm" class="btn btn-info">
+                    <i class="bi bi-check-circle me-1"></i>Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Meeting Modal -->
+<div class="modal fade" id="deleteMeetingModal" tabindex="-1" aria-labelledby="deleteMeetingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteMeetingForm" asp-action="DeleteConfirmed" method="post">
+                @Html.AntiForgeryToken()
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteMeetingModalLabel"><i class="bi bi-trash me-2"></i>Delete Meeting</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="deleteMeetingId" name="meetingId">
+                <p class="mb-0">Are you sure you want to delete the meeting: <strong id="deleteMeetingName"></strong>?</p>
+                <p class="text-danger mt-2 mb-0"><small><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash me-1"></i>Delete
+                </button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        background-color: #f6f9ff;
+        color: #012970;
+        font-weight: 600;
+        border-bottom: 2px solid #ebeef4;
+        padding: 15px;
+    }
+
+    .meeting-table-scroll {
+        overflow-x: auto;
+    }
+
+    .meeting-table-scroll table {
+        min-width: 1400px;
+    }
+
+    .meeting-table-scroll th,
+    .meeting-table-scroll td {
+        white-space: nowrap;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f9fbff;
+        transition: background-color 0.2s ease;
+    }
+
+    .table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ebeef4;
+        vertical-align: middle;
+    }
+
+    .fw-500 {
+        font-weight: 500;
+        color: #012970;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+        color: #fff;
+    }
+
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+
+    .btn-primary:hover {
+        background-color: #3144d9;
+        border-color: #2836c0;
+    }
+
+    .modal-header {
+        border-radius: 0;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #012970;
+    }
+</style>
+
+<script>
+    function editMeeting(id, description, dateTime, venueId, typeId, deptId, docPath) {
+        document.getElementById('editMeetingId').value = id;
+        document.getElementById('editMeetingDescription').value = description;
+        document.getElementById('editMeetingDate').value = dateTime;
+        document.getElementById('editMeetingVenueId').value = venueId;
+        document.getElementById('editMeetingTypeId').value = typeId;
+        document.getElementById('editMeetingDepartmentId').value = deptId;
+        document.getElementById('editDocumentPath').value = docPath;
+    }
+
+    function deleteMeeting(id, name) {
+        document.getElementById('deleteMeetingId').value = id;
+        document.getElementById('deleteMeetingName').textContent = name;
+    }
+
+    function escapeForJs(value) {
+        return (value ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+</script>

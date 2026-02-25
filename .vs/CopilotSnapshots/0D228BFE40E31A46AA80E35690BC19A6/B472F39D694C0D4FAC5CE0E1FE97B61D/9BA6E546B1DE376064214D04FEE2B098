@@ -1,0 +1,66 @@
+﻿@model MOM_Project.Models.MeetingType
+
+<div class="pagetitle">
+    <h1>Delete Meeting Type</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="MeetingType" asp-action="Index">Meeting Types</a></li>
+            <li class="breadcrumb-item active">Delete</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Confirm Delete</h5>
+                    <p class="text-danger"><strong>Are you sure you want to delete this meeting type?</strong></p>
+
+                    <dl class="row">
+                        <dt class="col-sm-3">Meeting Type ID</dt>
+                        <dd class="col-sm-9">@Model.MeetingTypeID</dd>
+
+                        <dt class="col-sm-3">Meeting Type Name</dt>
+                        <dd class="col-sm-9">@Model.MeetingTypeName</dd>
+                    </dl>
+
+                    <form asp-action="DeleteConfirmed" method="post" class="mt-4">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="meetingTypeId" value="@Model.MeetingTypeID" />
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                        <a asp-controller="MeetingType" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+</style>

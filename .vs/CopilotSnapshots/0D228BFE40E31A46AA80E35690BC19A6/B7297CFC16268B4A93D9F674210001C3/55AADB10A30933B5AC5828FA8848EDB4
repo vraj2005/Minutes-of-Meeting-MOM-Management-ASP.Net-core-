@@ -1,0 +1,237 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using MOM_Project.Models;
+using System.Data;
+
+namespace MOM_Project.Controllers
+{
+    public class MeetingTypeController : Controller
+    {
+        private readonly string _connectionString;
+
+        public MeetingTypeController(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("MOM_DB")
+                ?? throw new InvalidOperationException("Connection string 'MOM_DB' not found.");
+        }
+
+        public IActionResult Index()
+        {
+            var meetingTypes = new List<MeetingType>();
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("PR_MOM_MeetingType_SelectAll", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                connection.Open();
+                using var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    meetingTypes.Add(new MeetingType
+                    {
+                        MeetingTypeID = reader.GetInt32(reader.GetOrdinal("MeetingTypeID")),
+                        MeetingTypeName = reader.GetString(reader.GetOrdinal("MeetingTypeName")),
+                        Remarks = reader.IsDBNull(reader.GetOrdinal("Remarks")) ? null : reader.GetString(reader.GetOrdinal("Remarks")),
+                        Created = reader.GetDateTime(reader.GetOrdinal("Created")),
+                        Modified = reader.GetDateTime(reader.GetOrdinal("Modified"))
+                    });
+                }
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to load meeting types.");
+            }
+
+            return View(meetingTypes);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(MeetingType meetingType)
+        {
+            if (string.IsNullOrWhiteSpace(meetingType.MeetingTypeName))
+            {
+                ModelState.AddModelError(nameof(meetingType.MeetingTypeName), "Meeting type name is required.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(meetingType);
+            }
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("PR_MOM_MeetingType_Insert", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingTypeName", meetingType.MeetingTypeName.Trim());
+                command.Parameters.AddWithValue("@Remarks", (object?)meetingType.Remarks ?? DBNull.Value);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to create meeting type.");
+                return View(meetingType);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Edit(int id)
+        {
+            if (id <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var meetingType = GetMeetingTypeById(id);
+            if (meetingType is null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(meetingType);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(MeetingType meetingType)
+        {
+            if (meetingType.MeetingTypeID <= 0 || string.IsNullOrWhiteSpace(meetingType.MeetingTypeName))
+            {
+                if (string.IsNullOrWhiteSpace(meetingType.MeetingTypeName))
+                {
+                    ModelState.AddModelError(nameof(meetingType.MeetingTypeName), "Meeting type name is required.");
+                }
+
+                return View(meetingType);
+            }
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("PR_MOM_MeetingType_UpdateByPK", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingTypeID", meetingType.MeetingTypeID);
+                command.Parameters.AddWithValue("@MeetingTypeName", meetingType.MeetingTypeName.Trim());
+                command.Parameters.AddWithValue("@Remarks", (object?)meetingType.Remarks ?? DBNull.Value);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to update meeting type.");
+                return View(meetingType);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Delete(int id)
+        {
+            if (id <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var meetingType = GetMeetingTypeById(id);
+            if (meetingType is null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(meetingType);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int meetingTypeId)
+        {
+            if (meetingTypeId <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("PR_MOM_MeetingType_DeleteByPK", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingTypeID", meetingTypeId);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to delete meeting type.");
+                var meetingType = GetMeetingTypeById(meetingTypeId);
+                if (meetingType is null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View("Delete", meetingType);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private MeetingType? GetMeetingTypeById(int meetingTypeId)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("PR_MOM_MeetingType_SelectByPK", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingTypeID", meetingTypeId);
+
+                connection.Open();
+                using var reader = command.ExecuteReader();
+
+                if (!reader.Read())
+                {
+                    return null;
+                }
+
+                return new MeetingType
+                {
+                    MeetingTypeID = reader.GetInt32(reader.GetOrdinal("MeetingTypeID")),
+                    MeetingTypeName = reader.GetString(reader.GetOrdinal("MeetingTypeName")),
+                    Remarks = reader.IsDBNull(reader.GetOrdinal("Remarks")) ? null : reader.GetString(reader.GetOrdinal("Remarks")),
+                    Created = reader.GetDateTime(reader.GetOrdinal("Created")),
+                    Modified = reader.GetDateTime(reader.GetOrdinal("Modified"))
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+    }
+}
