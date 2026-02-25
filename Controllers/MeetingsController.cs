@@ -15,7 +15,7 @@ namespace MOM_Project.Controllers
                 ?? throw new InvalidOperationException("Connection string 'MOM_DB' not found.");
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? departmentId, int? meetingVenueId, int? meetingTypeId, DateTime? fromDate, DateTime? toDate, string? status)
         {
             var meetings = new List<Meeting>();
             var departments = LoadDepartments();
@@ -50,10 +50,61 @@ namespace MOM_Project.Controllers
                 ModelState.AddModelError(string.Empty, "Failed to load meetings.");
             }
 
+            var statusFilter = string.IsNullOrWhiteSpace(status) ? "all" : status.Trim();
+
+            IEnumerable<Meeting> filteredMeetings = meetings;
+
+            if (departmentId is > 0)
+            {
+                filteredMeetings = filteredMeetings.Where(m => m.DepartmentID == departmentId.Value);
+            }
+
+            if (meetingVenueId is > 0)
+            {
+                filteredMeetings = filteredMeetings.Where(m => m.MeetingVenueID == meetingVenueId.Value);
+            }
+
+            if (meetingTypeId is > 0)
+            {
+                filteredMeetings = filteredMeetings.Where(m => m.MeetingTypeID == meetingTypeId.Value);
+            }
+
+            if (fromDate.HasValue)
+            {
+                var start = fromDate.Value.Date;
+                filteredMeetings = filteredMeetings.Where(m => m.MeetingDate >= start);
+            }
+
+            if (toDate.HasValue)
+            {
+                var endInclusive = toDate.Value.Date.AddDays(1).AddTicks(-1);
+                filteredMeetings = filteredMeetings.Where(m => m.MeetingDate <= endInclusive);
+            }
+
+            switch (statusFilter.ToLowerInvariant())
+            {
+                case "active":
+                    filteredMeetings = filteredMeetings.Where(m => m.IsCancelled != true);
+                    break;
+                case "cancelled":
+                    filteredMeetings = filteredMeetings.Where(m => m.IsCancelled == true);
+                    break;
+                default:
+                    break;
+            }
+
             ViewBag.Departments = departments;
             ViewBag.MeetingTypes = meetingTypes;
             ViewBag.MeetingVenues = venues;
-            return View(meetings);
+
+            ViewBag.SelectedDepartmentId = departmentId;
+            ViewBag.SelectedMeetingVenueId = meetingVenueId;
+            ViewBag.SelectedMeetingTypeId = meetingTypeId;
+            ViewBag.SelectedStatus = statusFilter;
+            ViewBag.FilterFromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.FilterToDate = toDate?.ToString("yyyy-MM-dd");
+
+            return View(filteredMeetings.ToList());
         }
 
         [HttpPost]

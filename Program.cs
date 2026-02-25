@@ -11,6 +11,18 @@ namespace MOM_Project
 
             var app = builder.Build();
 
+			if (builder.Configuration.GetValue<bool>("SeedData:All") ||
+				string.Equals(Environment.GetEnvironmentVariable("MOM_SEED_ALL"), "true", StringComparison.OrdinalIgnoreCase))
+			{
+				Infrastructure.DatabaseSeeder.SeedAll(builder.Configuration);
+			}
+
+			if (builder.Configuration.GetValue<bool>("SeedData:Departments") ||
+				string.Equals(Environment.GetEnvironmentVariable("MOM_SEED_DEPARTMENTS"), "true", StringComparison.OrdinalIgnoreCase))
+			{
+				Infrastructure.DatabaseSeeder.SeedDepartmentsOnly(builder.Configuration);
+			}
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

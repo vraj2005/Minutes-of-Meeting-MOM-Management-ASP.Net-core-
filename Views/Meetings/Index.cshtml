@@ -5,6 +5,13 @@
     var departments = ViewBag.Departments as IEnumerable<MOM_Project.Models.Department>;
     var meetingTypes = ViewBag.MeetingTypes as IEnumerable<MOM_Project.Models.MeetingType>;
     var venues = ViewBag.MeetingVenues as IEnumerable<MOM_Project.Models.MeetingVenue>;
+
+    var selectedDepartmentId = ViewBag.SelectedDepartmentId is int d ? d : (int?)null;
+    var selectedMeetingVenueId = ViewBag.SelectedMeetingVenueId is int v ? v : (int?)null;
+    var selectedMeetingTypeId = ViewBag.SelectedMeetingTypeId is int t ? t : (int?)null;
+    var selectedStatus = ViewBag.SelectedStatus as string ?? "all";
+    var filterFromDate = ViewBag.FilterFromDate as string;
+    var filterToDate = ViewBag.FilterToDate as string;
 }
 
 <div class="pagetitle">
@@ -36,6 +43,130 @@
                             <i class="bi bi-plus-circle"></i> Schedule Meeting
                         </button>
                     </div>
+
+					<form asp-action="Index" method="get" class="row g-3 align-items-end mb-3">
+						<div class="col-12 col-md-3">
+							<label class="form-label">Department</label>
+							<select class="form-select" name="departmentId">
+								<option value="">All</option>
+								@if (departments != null)
+								{
+									foreach (var dep in departments)
+									{
+										if (selectedDepartmentId.HasValue && dep.DepartmentID == selectedDepartmentId.Value)
+										{
+											<option value="@dep.DepartmentID" selected>@dep.DepartmentName</option>
+										}
+										else
+										{
+											<option value="@dep.DepartmentID">@dep.DepartmentName</option>
+										}
+									}
+								}
+							</select>
+						</div>
+
+						<div class="col-12 col-md-3">
+							<label class="form-label">Venue</label>
+							<select class="form-select" name="meetingVenueId">
+								<option value="">All</option>
+								@if (venues != null)
+								{
+									foreach (var venue in venues)
+									{
+										if (selectedMeetingVenueId.HasValue && venue.MeetingVenueID == selectedMeetingVenueId.Value)
+										{
+											<option value="@venue.MeetingVenueID" selected>@venue.MeetingVenueName</option>
+										}
+										else
+										{
+											<option value="@venue.MeetingVenueID">@venue.MeetingVenueName</option>
+										}
+									}
+								}
+							</select>
+						</div>
+
+						<div class="col-12 col-md-3">
+							<label class="form-label">Type</label>
+							<select class="form-select" name="meetingTypeId">
+								<option value="">All</option>
+								@if (meetingTypes != null)
+								{
+									foreach (var mt in meetingTypes)
+									{
+										if (selectedMeetingTypeId.HasValue && mt.MeetingTypeID == selectedMeetingTypeId.Value)
+										{
+											<option value="@mt.MeetingTypeID" selected>@mt.MeetingTypeName</option>
+										}
+										else
+										{
+											<option value="@mt.MeetingTypeID">@mt.MeetingTypeName</option>
+										}
+									}
+								}
+							</select>
+						</div>
+
+						<div class="col-6 col-md-2">
+							<label class="form-label">From</label>
+							<input type="date" class="form-control" name="fromDate" value="@filterFromDate" />
+						</div>
+
+						<div class="col-6 col-md-2">
+							<label class="form-label">To</label>
+							<input type="date" class="form-control" name="toDate" value="@filterToDate" />
+						</div>
+
+						<div class="col-12 col-md-5">
+							<label class="form-label d-block">Status</label>
+							<div class="d-flex flex-wrap gap-3">
+								<div class="form-check">
+									@if (string.Equals(selectedStatus, "all", StringComparison.OrdinalIgnoreCase))
+									{
+										<input class="form-check-input" type="radio" name="status" id="statusAll" value="all" checked>
+									}
+									else
+									{
+										<input class="form-check-input" type="radio" name="status" id="statusAll" value="all">
+									}
+									<label class="form-check-label" for="statusAll">All</label>
+								</div>
+								<div class="form-check">
+									@if (string.Equals(selectedStatus, "active", StringComparison.OrdinalIgnoreCase))
+									{
+										<input class="form-check-input" type="radio" name="status" id="statusActive" value="active" checked>
+									}
+									else
+									{
+										<input class="form-check-input" type="radio" name="status" id="statusActive" value="active">
+									}
+									<label class="form-check-label" for="statusActive">Active</label>
+								</div>
+								<div class="form-check">
+									@if (string.Equals(selectedStatus, "cancelled", StringComparison.OrdinalIgnoreCase))
+									{
+										<input class="form-check-input" type="radio" name="status" id="statusCancelled" value="cancelled" checked>
+									}
+									else
+									{
+										<input class="form-check-input" type="radio" name="status" id="statusCancelled" value="cancelled">
+									}
+									<label class="form-check-label" for="statusCancelled">Cancelled</label>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-12 col-md-3">
+							<button type="submit" class="btn btn-primary w-100">
+								<i class="bi bi-funnel me-1"></i>Apply
+							</button>
+						</div>
+
+						<div class="col-12 col-md-2">
+							<a asp-action="Index" class="btn btn-outline-secondary w-100">Clear</a>
+						</div>
+					</form>
 
                     <div class="table-responsive meeting-table-scroll">
                         <table class="table table-hover datatable">
