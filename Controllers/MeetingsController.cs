@@ -153,6 +153,19 @@ namespace MOM_Project.Controllers
 
             try
             {
+                var existingMeeting = GetMeetingById(meeting.MeetingID);
+                var isCancelled = meeting.IsCancelled == true;
+                var existingWasCancelled = existingMeeting?.IsCancelled == true;
+                var cancellationDateTime = isCancelled
+                    ? (existingWasCancelled ? existingMeeting?.CancellationDateTime : null) ?? DateTime.Now
+                    : (DateTime?)null;
+
+                var cancellationReason = isCancelled
+                    ? (string.IsNullOrWhiteSpace(meeting.CancellationReason)
+                        ? existingMeeting?.CancellationReason
+                        : meeting.CancellationReason.Trim())
+                    : null;
+
                 using var connection = new SqlConnection(_connectionString);
                 using var command = new SqlCommand("dbo.PR_MOM_Meetings_UpdateByPK", connection)
                 {
@@ -167,12 +180,16 @@ namespace MOM_Project.Controllers
                 command.Parameters.AddWithValue("@MeetingDescription", (object?)meeting.MeetingDescription ?? DBNull.Value);
                 command.Parameters.AddWithValue("@DocumentPath", (object?)meeting.DocumentPath ?? DBNull.Value);
 
+				command.Parameters.AddWithValue("@IsCancelled", isCancelled);
+				command.Parameters.AddWithValue("@CancellationDateTime", (object?)cancellationDateTime ?? DBNull.Value);
+				command.Parameters.AddWithValue("@CancellationReason", (object?)cancellationReason ?? DBNull.Value);
+
                 connection.Open();
                 command.ExecuteNonQuery();
             }
             catch
             {
-                ModelState.AddModelError(string.Empty, "Failed to update meeting.");
+                TempData["ErrorMessage"] = "Failed to update meeting.";
             }
 
             return RedirectToAction(nameof(Index));

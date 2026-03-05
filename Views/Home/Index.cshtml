@@ -1,5 +1,7 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
+﻿@model MOM_Project.Models.DashboardViewModel
+
+@{
+	ViewData["Title"] = "Dashboard";
 }
 
 <div class="pagetitle">
@@ -19,23 +21,41 @@
         <div class="col-lg-8">
             <div class="row">
 
-                <!-- Total Meetings Card -->
+                <!-- Meetings This Month -->
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card sales-card">
                         <div class="card-body">
-                            <h5 class="card-title">Total Meetings <span>| This Month</span></h5>
+                            <h5 class="card-title">Meetings <span>| This Month</span></h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-calendar-event"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>24</h6>
-                                    <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+								<h6>@Model.TotalMeetingsThisMonth</h6>
+								<span class="text-muted small pt-2 ps-1">scheduled</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div><!-- End Total Meetings Card -->
+                </div>
+
+				<!-- Cancelled Meetings Card -->
+				<div class="col-xxl-4 col-md-6">
+					<div class="card info-card customers-card">
+						<div class="card-body">
+							<h5 class="card-title">Cancelled <span>| This Month</span></h5>
+							<div class="d-flex align-items-center">
+								<div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+									<i class="bi bi-x-circle"></i>
+								</div>
+								<div class="ps-3">
+									<h6>@Model.TotalMeetingsCancelledThisMonth</h6>
+									<span class="text-muted small pt-2 ps-1">meetings</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
                 <!-- Staff Members Card -->
                 <div class="col-xxl-4 col-md-6">
@@ -47,8 +67,8 @@
                                     <i class="bi bi-people"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>156</h6>
-                                    <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+								<h6>@Model.TotalStaff</h6>
+								<span class="text-muted small pt-2 ps-1">members</span>
                                 </div>
                             </div>
                         </div>
@@ -65,8 +85,8 @@
                                     <i class="bi bi-building"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>12</h6>
-                                    <span class="text-muted small pt-2 ps-1">departments</span>
+								<h6>@Model.TotalDepartments</h6>
+								<span class="text-muted small pt-2 ps-1">departments</span>
                                 </div>
                             </div>
                         </div>
@@ -90,46 +110,37 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Q4 Planning Meeting</td>
-                                        <td>10 Jan 2026, 10:00 AM</td>
-                                        <td>Conference Room A</td>
-                                        <td>Human Resources</td>
-                                        <td><span class="badge bg-success">Scheduled</span></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Budget Review</td>
-                                        <td>11 Jan 2026, 02:00 PM</td>
-                                        <td>Board Room</td>
-                                        <td>Finance</td>
-                                        <td><span class="badge bg-success">Scheduled</span></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Project Status Update</td>
-                                        <td>12 Jan 2026, 11:00 AM</td>
-                                        <td>Conference Room B</td>
-                                        <td>IT Department</td>
-                                        <td><span class="badge bg-warning">Pending</span></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">4</th>
-                                        <td>Team Building Session</td>
-                                        <td>13 Jan 2026, 03:00 PM</td>
-                                        <td>Main Auditorium</td>
-                                        <td>Operations</td>
-                                        <td><span class="badge bg-success">Scheduled</span></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">5</th>
-                                        <td>Training Workshop</td>
-                                        <td>14 Jan 2026, 09:00 AM</td>
-                                        <td>Training Room</td>
-                                        <td>Marketing</td>
-                                        <td><span class="badge bg-info">In Progress</span></td>
-                                    </tr>
+								@if (Model.UpcomingMeetings != null && Model.UpcomingMeetings.Count > 0)
+								{
+									var index = 0;
+									foreach (var m in Model.UpcomingMeetings)
+									{
+										index++;
+										<tr>
+											<th scope="row">@index</th>
+											<td>@(string.IsNullOrWhiteSpace(m.MeetingDescription) ? "-" : m.MeetingDescription)</td>
+											<td>@m.MeetingDate.ToString("dd MMM yyyy, hh:mm tt")</td>
+											<td>@(m.VenueName ?? "-")</td>
+											<td>@(m.DepartmentName ?? "-")</td>
+											<td>
+												@if (m.IsCancelled)
+												{
+													<span class="badge bg-danger">Cancelled</span>
+												}
+												else
+												{
+													<span class="badge bg-success">Scheduled</span>
+												}
+											</td>
+										</tr>
+									}
+								}
+								else
+								{
+									<tr>
+										<td colspan="6" class="text-center text-muted">No upcoming meetings in the next 7 days.</td>
+									</tr>
+								}
                                 </tbody>
                             </table>
                         </div>
@@ -141,53 +152,10 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Meeting Statistics <span>| Last 6 Months</span></h5>
-                            <div id="meetingChart"></div>
-                            <script>
-                                document.addEventListener("DOMContentLoaded", () => {
-                                    new ApexCharts(document.querySelector("#meetingChart"), {
-                                        series: [{
-                                            name: 'Meetings Held',
-                                            data: [18, 22, 28, 24, 32, 24],
-                                        }, {
-                                            name: 'Cancelled',
-                                            data: [2, 3, 1, 2, 4, 2]
-                                        }],
-                                        chart: {
-                                            height: 350,
-                                            type: 'bar',
-                                            toolbar: { show: false },
-                                        },
-                                        colors: ['#4154f1', '#ff771d'],
-                                        plotOptions: {
-                                            bar: {
-                                                horizontal: false,
-                                                columnWidth: '55%',
-                                                endingShape: 'rounded'
-                                            },
-                                        },
-                                        dataLabels: { enabled: false },
-                                        stroke: {
-                                            show: true,
-                                            width: 2,
-                                            colors: ['transparent']
-                                        },
-                                        xaxis: {
-                                            categories: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'],
-                                        },
-                                        yaxis: {
-                                            title: { text: 'Number of Meetings' }
-                                        },
-                                        fill: { opacity: 1 },
-                                        tooltip: {
-                                            y: {
-                                                formatter: function(val) {
-                                                    return val + " meetings"
-                                                }
-                                            }
-                                        }
-                                    }).render();
-                                });
-                            </script>
+						<div id="meetingChart"
+								 data-categories='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartCategories))'
+								 data-held='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartMeetingsHeld))'
+								 data-cancelled='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartMeetingsCancelled))'></div>
                         </div>
                     </div>
                 </div><!-- End Meeting Statistics Chart -->

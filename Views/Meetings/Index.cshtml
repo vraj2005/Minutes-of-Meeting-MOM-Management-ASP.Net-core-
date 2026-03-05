@@ -210,7 +210,16 @@
                                             <td class="text-center">@(meeting.CancellationDateTime.HasValue ? meeting.CancellationDateTime : "-")</td>
                                             <td>@(string.IsNullOrWhiteSpace(meeting.CancellationReason) ? "-" : meeting.CancellationReason)</td>
                                             <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingModal" onclick="editMeeting(@meeting.MeetingID, '@(meeting.MeetingDescription ?? string.Empty)', '@meeting.MeetingDate.ToString("yyyy-MM-ddTHH:mm")', @meeting.MeetingVenueID, @meeting.MeetingTypeID, @meeting.DepartmentID, '@(meeting.DocumentPath ?? string.Empty)')">
+								<button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMeetingModal"
+										data-id="@meeting.MeetingID"
+										data-description="@meeting.MeetingDescription"
+										data-datetime="@meeting.MeetingDate.ToString("yyyy-MM-ddTHH:mm")"
+										data-venueid="@meeting.MeetingVenueID"
+										data-typeid="@meeting.MeetingTypeID"
+										data-departmentid="@meeting.DepartmentID"
+										data-docpath="@meeting.DocumentPath"
+										data-iscancelled="@(meeting.IsCancelled == true ? "true" : "false")"
+										data-cancellationreason="@meeting.CancellationReason">
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
                                                 <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMeetingModal" data-id="@meeting.MeetingID" data-name="@(meeting.MeetingDescription ?? string.Empty)" onclick="deleteMeeting(@meeting.MeetingID, '@(meeting.MeetingDescription ?? string.Empty)')">
@@ -390,6 +399,19 @@
                         <label for="editDocumentPath" class="form-label">Document Path</label>
                         <input type="text" class="form-control" id="editDocumentPath" name="DocumentPath" placeholder="Enter document path (optional)">
                     </div>
+
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<div class="form-check form-switch">
+								<input class="form-check-input" type="checkbox" role="switch" id="editIsCancelled" name="IsCancelled" value="true">
+								<label class="form-check-label" for="editIsCancelled">Is Cancelled</label>
+							</div>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label for="editCancellationReason" class="form-label">Cancellation Reason</label>
+							<input type="text" class="form-control" id="editCancellationReason" name="CancellationReason" placeholder="Enter cancellation reason" disabled>
+						</div>
+					</div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -503,16 +525,6 @@
 </style>
 
 <script>
-    function editMeeting(id, description, dateTime, venueId, typeId, deptId, docPath) {
-        document.getElementById('editMeetingId').value = id;
-        document.getElementById('editMeetingDescription').value = description;
-        document.getElementById('editMeetingDate').value = dateTime;
-        document.getElementById('editMeetingVenueId').value = venueId;
-        document.getElementById('editMeetingTypeId').value = typeId;
-        document.getElementById('editMeetingDepartmentId').value = deptId;
-        document.getElementById('editDocumentPath').value = docPath;
-    }
-
     function deleteMeeting(id, name) {
         document.getElementById('deleteMeetingId').value = id;
         document.getElementById('deleteMeetingName').textContent = name;

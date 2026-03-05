@@ -384,6 +384,119 @@
                 deleteMeetingModal.dataset.bound = 'true';
             }
 
+			// Meetings edit modal
+			const editMeetingModal = root.getElementById?.('editMeetingModal') ?? document.getElementById('editMeetingModal');
+			if (editMeetingModal && !editMeetingModal.dataset.bound) {
+				editMeetingModal.addEventListener('show.bs.modal', function (event) {
+					const btn = event.relatedTarget;
+					if (!btn) return;
+
+					const idInput = document.getElementById('editMeetingId');
+					const descriptionInput = document.getElementById('editMeetingDescription');
+					const dateInput = document.getElementById('editMeetingDate');
+					const venueSelect = document.getElementById('editMeetingVenueId');
+					const typeSelect = document.getElementById('editMeetingTypeId');
+					const deptSelect = document.getElementById('editMeetingDepartmentId');
+					const docPathInput = document.getElementById('editDocumentPath');
+					const isCancelledInput = document.getElementById('editIsCancelled');
+					const reasonInput = document.getElementById('editCancellationReason');
+
+					if (idInput) idInput.value = btn.getAttribute('data-id') || '';
+					if (descriptionInput) descriptionInput.value = btn.getAttribute('data-description') || '';
+					if (dateInput) dateInput.value = btn.getAttribute('data-datetime') || '';
+					if (venueSelect) venueSelect.value = btn.getAttribute('data-venueid') || '';
+					if (typeSelect) typeSelect.value = btn.getAttribute('data-typeid') || '';
+					if (deptSelect) deptSelect.value = btn.getAttribute('data-departmentid') || '';
+					if (docPathInput) docPathInput.value = btn.getAttribute('data-docpath') || '';
+
+					const cancelled = (btn.getAttribute('data-iscancelled') || '').toLowerCase() === 'true';
+					if (isCancelledInput) isCancelledInput.checked = cancelled;
+					if (reasonInput) {
+						reasonInput.value = btn.getAttribute('data-cancellationreason') || '';
+						reasonInput.disabled = !cancelled;
+					}
+				});
+
+				const isCancelledInput = document.getElementById('editIsCancelled');
+				if (isCancelledInput && !isCancelledInput.dataset.bound) {
+					isCancelledInput.addEventListener('change', function () {
+						const reasonInput = document.getElementById('editCancellationReason');
+						if (!reasonInput) return;
+						reasonInput.disabled = !this.checked;
+						if (!this.checked) {
+							reasonInput.value = '';
+						}
+					});
+					isCancelledInput.dataset.bound = 'true';
+				}
+
+				editMeetingModal.dataset.bound = 'true';
+			}
+
+			// Dashboard charts
+			const meetingChartEl = (root.querySelector?.('#meetingChart')) ?? document.getElementById('meetingChart');
+			if (meetingChartEl && !meetingChartEl.dataset.bound) {
+				try {
+					if (typeof ApexCharts === 'undefined') return;
+
+					const categories = JSON.parse(meetingChartEl.dataset.categories || '[]');
+					const held = JSON.parse(meetingChartEl.dataset.held || '[]');
+					const cancelled = JSON.parse(meetingChartEl.dataset.cancelled || '[]');
+
+					if (window._momMeetingChart && typeof window._momMeetingChart.destroy === 'function') {
+						window._momMeetingChart.destroy();
+					}
+
+					window._momMeetingChart = new ApexCharts(meetingChartEl, {
+						series: [{
+							name: 'Meetings',
+							data: held,
+						}, {
+							name: 'Cancelled',
+							data: cancelled
+						}],
+						chart: {
+							height: 350,
+							type: 'bar',
+							toolbar: { show: false },
+						},
+						colors: ['#4154f1', '#dc3545'],
+						plotOptions: {
+							bar: {
+								horizontal: false,
+								columnWidth: '55%',
+								endingShape: 'rounded'
+							},
+						},
+						dataLabels: { enabled: false },
+						stroke: {
+							show: true,
+							width: 2,
+							colors: ['transparent']
+						},
+						xaxis: {
+							categories: categories,
+						},
+						yaxis: {
+							title: { text: 'Meetings' }
+						},
+						fill: { opacity: 1 },
+						tooltip: {
+							y: {
+								formatter: function (val) {
+									return val + ' meetings';
+								}
+							}
+						}
+					});
+
+					window._momMeetingChart.render();
+					meetingChartEl.dataset.bound = 'true';
+				} catch (e) {
+					console.error('Dashboard chart init failed', e);
+				}
+			}
+
             // MeetingMember (Attendance) delete modal
             const deleteMemberModal = root.getElementById?.('deleteMemberModal') ?? document.getElementById('deleteMemberModal');
             if (deleteMemberModal && !deleteMemberModal.dataset.bound) {

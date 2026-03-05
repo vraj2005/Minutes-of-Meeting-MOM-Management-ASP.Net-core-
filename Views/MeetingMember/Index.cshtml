@@ -31,9 +31,14 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h5 class="card-title mb-0">Attendance Records</h5>
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMemberModal">
-                            <i class="bi bi-plus-circle"></i> Add Member to Meeting
-                        </button>
+					<div class="d-flex gap-2">
+						<a asp-action="Fill" class="btn btn-success btn-sm">
+							<i class="bi bi-clipboard-plus"></i> Fill Attendance
+						</a>
+						<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+							<i class="bi bi-plus-circle"></i> Add Member to Meeting
+						</button>
+					</div>
                     </div>
 
                     <div class="table-responsive">
@@ -58,11 +63,15 @@
                                     foreach (var member in Model)
                                     {
                                         rowIndex++;
-                                        var meetingDate = meetings?.FirstOrDefault(m => m.MeetingID == member.MeetingID)?.MeetingDate;
+                                        var meeting = meetings?.FirstOrDefault(m => m.MeetingID == member.MeetingID);
+                                        var meetingDate = meeting?.MeetingDate;
+                                        var meetingDisplay = meeting != null
+										? $"{meeting.MeetingDescription} ({meeting.MeetingDate:dd/MM/yyyy HH:mm})"
+										: "-";
                                         var staffName = staff?.FirstOrDefault(s => s.StaffID == member.StaffID)?.StaffName;
                                         <tr>
                                             <td class="text-center fw-bold">@rowIndex</td>
-                                            <td><span class="fw-500">@(meetingDate?.ToString() ?? "-")</span></td>
+                                            <td><span class="fw-500">@meetingDisplay</span></td>
                                             <td>@(staffName ?? "-")</td>
                                             <td class="text-center">
                                                 @if (member.IsPresent)
@@ -75,12 +84,12 @@
                                                 }
                                             </td>
                                             <td>@member.Remarks</td>
-                                            <td class="text-center">@(meetingDate?.ToString("dd/MM/yyyy") ?? "-")</td>
+                                            <td class="text-center">@(meetingDate?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-sm btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editMemberModal" onclick="editMember(@member.MeetingMemberID, @member.MeetingID, @member.StaffID, @(member.IsPresent ? "true" : "false"), '@(member.Remarks ?? string.Empty)')">
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMemberModal" data-id="@member.MeetingMemberID" data-staff="@(staffName ?? string.Empty)" data-meeting="@(meetingDate?.ToString("yyyy-MM-dd HH:mm") ?? string.Empty)" onclick="deleteMember(@member.MeetingMemberID, '@(staffName ?? string.Empty)', '@(meetingDate?.ToString("yyyy-MM-dd HH:mm") ?? string.Empty)')">
+                                                <button type="button" class="btn btn-sm btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteMemberModal" data-id="@member.MeetingMemberID" data-staff="@(staffName ?? string.Empty)" data-meeting="@meetingDisplay" onclick="deleteMember(@member.MeetingMemberID, '@(staffName ?? string.Empty)', '@meetingDisplay')">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </td>
@@ -115,7 +124,8 @@
                             {
                                 foreach (var meeting in meetings)
                                 {
-                                    <option value="@meeting.MeetingID">@meeting.MeetingDate</option>
+									var meetingText = $"{meeting.MeetingDescription} ({meeting.MeetingDate:dd/MM/yyyy HH:mm})";
+									<option value="@meeting.MeetingID">@meetingText</option>
                                 }
                             }
                         </select>
@@ -188,7 +198,8 @@
                             {
                                 foreach (var meeting in meetings)
                                 {
-                                    <option value="@meeting.MeetingID">@meeting.MeetingDate</option>
+									var meetingText = $"{meeting.MeetingDescription} ({meeting.MeetingDate:dd/MM/yyyy HH:mm})";
+									<option value="@meeting.MeetingID">@meetingText</option>
                                 }
                             }
                         </select>

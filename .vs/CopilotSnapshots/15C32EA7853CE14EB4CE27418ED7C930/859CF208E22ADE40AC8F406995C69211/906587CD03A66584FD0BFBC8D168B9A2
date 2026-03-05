@@ -1,0 +1,352 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using MOM_Project.Models;
+using System.Data;
+
+namespace MOM_Project.Controllers
+{
+    public class MeetingsController : Controller
+    {
+        private readonly string _connectionString;
+
+        public MeetingsController(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("MOM_DB")
+                ?? throw new InvalidOperationException("Connection string 'MOM_DB' not found.");
+        }
+
+        public IActionResult Index(int? departmentId, int? meetingVenueId, int? meetingTypeId, DateTime? fromDate, DateTime? toDate, string? status)
+        {
+            var meetings = new List<Meeting>();
+            var departments = LoadDepartments();
+            var meetingTypes = LoadMeetingTypes();
+            var venues = LoadMeetingVenues();
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("dbo.PR_MOM_Meetings_SelectAll", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                connection.Open();
+                using var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var meetingId = reader.GetInt32(reader.GetOrdinal("MeetingID"));
+                    var meeting = GetMeetingById(meetingId);
+                    if (meeting is null)
+                    {
+                        continue;
+                    }
+
+                    meetings.Add(meeting);
+                }
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to load meetings.");
+            }
+
+            var statusFilter = string.IsNullOrWhiteSpace(status) ? "all" : status.Trim();
+
+            IEnumerable<Meeting> filteredMeetings = meetings;
+
+            if (departmentId is > 0)
+            {
+                filteredMeetings = filteredMeetings.Where(m => m.DepartmentID == departmentId.Value);
+            }
+
+            if (meetingVenueId is > 0)
+            {
+                filteredMeetings = filteredMeetings.Where(m => m.MeetingVenueID == meetingVenueId.Value);
+            }
+
+            if (meetingTypeId is > 0)
+            {
+                filteredMeetings = filteredMeetings.Where(m => m.MeetingTypeID == meetingTypeId.Value);
+            }
+
+            if (fromDate.HasValue)
+            {
+                var start = fromDate.Value.Date;
+                filteredMeetings = filteredMeetings.Where(m => m.MeetingDate >= start);
+            }
+
+            if (toDate.HasValue)
+            {
+                var endInclusive = toDate.Value.Date.AddDays(1).AddTicks(-1);
+                filteredMeetings = filteredMeetings.Where(m => m.MeetingDate <= endInclusive);
+            }
+
+            switch (statusFilter.ToLowerInvariant())
+            {
+                case "active":
+                    filteredMeetings = filteredMeetings.Where(m => m.IsCancelled != true);
+                    break;
+                case "cancelled":
+                    filteredMeetings = filteredMeetings.Where(m => m.IsCancelled == true);
+                    break;
+                default:
+                    break;
+            }
+
+            ViewBag.Departments = departments;
+            ViewBag.MeetingTypes = meetingTypes;
+            ViewBag.MeetingVenues = venues;
+
+            ViewBag.SelectedDepartmentId = departmentId;
+            ViewBag.SelectedMeetingVenueId = meetingVenueId;
+            ViewBag.SelectedMeetingTypeId = meetingTypeId;
+            ViewBag.SelectedStatus = statusFilter;
+            ViewBag.FilterFromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.FilterToDate = toDate?.ToString("yyyy-MM-dd");
+
+            return View(filteredMeetings.ToList());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Meeting meeting)
+        {
+            if (meeting.MeetingDate == default || meeting.MeetingVenueID <= 0 || meeting.MeetingTypeID <= 0 || meeting.DepartmentID <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("dbo.PR_MOM_Meetings_Insert", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingDate", meeting.MeetingDate);
+                command.Parameters.AddWithValue("@MeetingTypeID", meeting.MeetingTypeID);
+                command.Parameters.AddWithValue("@DepartmentID", meeting.DepartmentID);
+                command.Parameters.AddWithValue("@MeetingVenueID", meeting.MeetingVenueID);
+                command.Parameters.AddWithValue("@MeetingDescription", (object?)meeting.MeetingDescription ?? DBNull.Value);
+                command.Parameters.AddWithValue("@DocumentPath", (object?)meeting.DocumentPath ?? DBNull.Value);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to schedule meeting.");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Meeting meeting)
+        {
+            if (meeting.MeetingID <= 0 || meeting.MeetingDate == default || meeting.MeetingVenueID <= 0 || meeting.MeetingTypeID <= 0 || meeting.DepartmentID <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("dbo.PR_MOM_Meetings_UpdateByPK", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingID", meeting.MeetingID);
+                command.Parameters.AddWithValue("@MeetingDate", meeting.MeetingDate);
+                command.Parameters.AddWithValue("@MeetingTypeID", meeting.MeetingTypeID);
+                command.Parameters.AddWithValue("@DepartmentID", meeting.DepartmentID);
+                command.Parameters.AddWithValue("@MeetingVenueID", meeting.MeetingVenueID);
+                command.Parameters.AddWithValue("@MeetingDescription", (object?)meeting.MeetingDescription ?? DBNull.Value);
+                command.Parameters.AddWithValue("@DocumentPath", (object?)meeting.DocumentPath ?? DBNull.Value);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+
+				var isCancelled = meeting.IsCancelled == true;
+				var reason = string.IsNullOrWhiteSpace(meeting.CancellationReason) ? null : meeting.CancellationReason.Trim();
+
+				using var cancelCommand = new SqlCommand(@"UPDATE dbo.MOM_Meetings
+SET IsCancelled = @IsCancelled,
+    CancellationDateTime = CASE WHEN @IsCancelled = 1 THEN ISNULL(CancellationDateTime, GETDATE()) ELSE NULL END,
+    CancellationReason = CASE WHEN @IsCancelled = 1 THEN @CancellationReason ELSE NULL END,
+    Modified = GETDATE()
+WHERE MeetingID = @MeetingID", connection);
+
+				cancelCommand.Parameters.AddWithValue("@MeetingID", meeting.MeetingID);
+				cancelCommand.Parameters.AddWithValue("@IsCancelled", isCancelled);
+				cancelCommand.Parameters.AddWithValue("@CancellationReason", (object?)reason ?? DBNull.Value);
+				cancelCommand.ExecuteNonQuery();
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to update meeting.");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int meetingId)
+        {
+            if (meetingId <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("dbo.PR_MOM_Meetings_DeleteByPK", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingID", meetingId);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch (SqlException ex) when (ex.Number is 547)
+            {
+                TempData["ErrorMessage"] = "Cannot delete this meeting because it is being used in other records (e.g., Attendance/Meeting Members). Remove dependent records first.";
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Failed to delete meeting.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private Meeting? GetMeetingById(int meetingId)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("dbo.PR_MOM_Meetings_SelectByPK", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingID", meetingId);
+
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                if (!reader.Read())
+                {
+                    return null;
+                }
+
+                return new Meeting
+                {
+                    MeetingID = reader.GetInt32(reader.GetOrdinal("MeetingID")),
+                    MeetingDate = reader.GetDateTime(reader.GetOrdinal("MeetingDate")),
+                    MeetingTypeID = reader.GetInt32(reader.GetOrdinal("MeetingTypeID")),
+                    DepartmentID = reader.GetInt32(reader.GetOrdinal("DepartmentID")),
+                    MeetingVenueID = reader.GetInt32(reader.GetOrdinal("MeetingVenueID")),
+                    MeetingDescription = reader.IsDBNull(reader.GetOrdinal("MeetingDescription")) ? string.Empty : reader.GetString(reader.GetOrdinal("MeetingDescription")),
+                    DocumentPath = reader.IsDBNull(reader.GetOrdinal("DocumentPath")) ? string.Empty : reader.GetString(reader.GetOrdinal("DocumentPath")),
+                    IsCancelled = reader.GetBoolean(reader.GetOrdinal("IsCancelled")),
+                    CancellationDateTime = reader.IsDBNull(reader.GetOrdinal("CancellationDateTime")) ? null : reader.GetDateTime(reader.GetOrdinal("CancellationDateTime")),
+                    CancellationReason = reader.IsDBNull(reader.GetOrdinal("CancellationReason")) ? string.Empty : reader.GetString(reader.GetOrdinal("CancellationReason")),
+                    Created = reader.GetDateTime(reader.GetOrdinal("Created")),
+                    Modified = reader.GetDateTime(reader.GetOrdinal("Modified"))
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private List<Department> LoadDepartments()
+        {
+            var departments = new List<Department>();
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("dbo.PR_MOM_Department_SelectAll", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                departments.Add(new Department
+                {
+                    DepartmentID = reader.GetInt32(reader.GetOrdinal("DepartmentID")),
+                    DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName"))
+                });
+            }
+
+            return departments;
+        }
+
+        private List<MeetingType> LoadMeetingTypes()
+        {
+            var meetingTypes = new List<MeetingType>();
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("dbo.PR_MOM_MeetingType_SelectAll", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                meetingTypes.Add(new MeetingType
+                {
+                    MeetingTypeID = reader.GetInt32(reader.GetOrdinal("MeetingTypeID")),
+                    MeetingTypeName = reader.GetString(reader.GetOrdinal("MeetingTypeName"))
+                });
+            }
+
+            return meetingTypes;
+        }
+
+        private List<MeetingVenue> LoadMeetingVenues()
+        {
+            var venues = new List<MeetingVenue>();
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("dbo.PR_MOM_MeetingVenue_SelectAll", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                venues.Add(new MeetingVenue
+                {
+                    MeetingVenueID = reader.GetInt32(reader.GetOrdinal("MeetingVenueID")),
+                    MeetingVenueName = reader.GetString(reader.GetOrdinal("MeetingVenueName"))
+                });
+            }
+
+            return venues;
+        }
+
+        private static int GetDepartmentIdByName(IEnumerable<Department> departments, string departmentName)
+            => departments.FirstOrDefault(d => d.DepartmentName == departmentName)?.DepartmentID ?? 0;
+
+        private static int GetMeetingTypeIdByName(IEnumerable<MeetingType> meetingTypes, string meetingTypeName)
+            => meetingTypes.FirstOrDefault(t => t.MeetingTypeName == meetingTypeName)?.MeetingTypeID ?? 0;
+
+        private static int GetVenueIdByName(IEnumerable<MeetingVenue> venues, string venueName)
+            => venues.FirstOrDefault(v => v.MeetingVenueName == venueName)?.MeetingVenueID ?? 0;
+    }
+}

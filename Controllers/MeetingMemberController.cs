@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using MOM_Project.Models;
 using System.Data;
 
+
 namespace MOM_Project.Controllers
 {
     public class MeetingMemberController : Controller
@@ -52,6 +53,153 @@ namespace MOM_Project.Controllers
             ViewBag.Staff = staff;
             return View(members);
         }
+
+		[HttpGet]
+		public IActionResult Fill(int? meetingId)
+		{
+			var model = new FillAttendanceViewModel();
+			var meetings = LoadMeetings().OrderByDescending(m => m.MeetingDate).ToList();
+			model.Meetings = meetings;
+			model.SelectedMeetingId = meetingId;
+
+			if (meetingId is null || meetingId <= 0)
+			{
+				return View(model);
+			}
+
+			try
+			{
+				using var connection = new SqlConnection(_connectionString);
+				connection.Open();
+
+				model.Meeting = GetMeetingDetailsById(connection, meetingId.Value);
+				if (model.Meeting == null)
+				{
+					TempData["ErrorMessage"] = "Meeting not found.";
+					return View(model);
+				}
+
+				var staff = LoadStaff().ToList();
+				if (model.Meeting.DepartmentID > 0)
+				{
+					var departmentName = LoadDepartments(connection)
+						.FirstOrDefault(d => d.DepartmentID == model.Meeting.DepartmentID)?.DepartmentName;
+
+					if (!string.IsNullOrWhiteSpace(departmentName))
+					{
+						staff = staff
+							.Where(s => string.Equals(s.DepartmentName, departmentName, StringComparison.OrdinalIgnoreCase))
+							.ToList();
+					}
+				}
+
+				var existing = LoadMeetingMembersByMeetingId(connection, meetingId.Value);
+				foreach (var s in staff.OrderBy(s => s.StaffName))
+				{
+					var existingRow = existing.FirstOrDefault(x => x.StaffID == s.StaffID);
+					model.StaffRows.Add(new FillAttendanceStaffRow
+					{
+						StaffID = s.StaffID,
+						StaffName = s.StaffName,
+						DepartmentName = s.DepartmentName,
+						IsPresent = existingRow?.IsPresent ?? false,
+						Remarks = existingRow?.Remarks
+					});
+				}
+			}
+			catch
+			{
+				TempData["ErrorMessage"] = "Failed to load fill attendance screen.";
+			}
+
+			return View(model);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult Fill(FillAttendancePostModel model)
+		{
+			if (!ModelState.IsValid || model.MeetingID <= 0)
+			{
+				return RedirectToAction(nameof(Fill), new { meetingId = model.MeetingID });
+			}
+
+			try
+			{
+				using var connection = new SqlConnection(_connectionString);
+				connection.Open();
+
+				var meeting = GetMeetingDetailsById(connection, model.MeetingID);
+				if (meeting == null)
+				{
+					TempData["ErrorMessage"] = "Meeting not found.";
+					return RedirectToAction(nameof(Fill));
+				}
+
+				if (meeting.IsCancelled == true)
+				{
+					TempData["ErrorMessage"] = "Cannot fill attendance for a cancelled meeting.";
+					return RedirectToAction(nameof(Fill), new { meetingId = model.MeetingID });
+				}
+
+				var allStaff = LoadStaff();
+				if (meeting.DepartmentID > 0)
+				{
+					var departmentName = LoadDepartments(connection)
+						.FirstOrDefault(d => d.DepartmentID == meeting.DepartmentID)?.DepartmentName;
+					if (!string.IsNullOrWhiteSpace(departmentName))
+					{
+						allStaff = allStaff
+							.Where(s => string.Equals(s.DepartmentName, departmentName, StringComparison.OrdinalIgnoreCase))
+							.ToList();
+					}
+				}
+
+				var presentSet = new HashSet<int>(model.PresentStaffIds ?? []);
+				var existing = LoadMeetingMembersByMeetingId(connection, model.MeetingID);
+
+				foreach (var staff in allStaff)
+				{
+					var isPresent = presentSet.Contains(staff.StaffID);
+					var remarks = isPresent ? "Present" : "Absent";
+					var existingRow = existing.FirstOrDefault(x => x.StaffID == staff.StaffID);
+
+					if (existingRow != null)
+					{
+						using var update = new SqlCommand("dbo.PR_MOM_MeetingMember_UpdateByPK", connection)
+						{
+							CommandType = CommandType.StoredProcedure
+						};
+						update.Parameters.AddWithValue("@MeetingMemberID", existingRow.MeetingMemberID);
+						update.Parameters.AddWithValue("@MeetingID", model.MeetingID);
+						update.Parameters.AddWithValue("@StaffID", staff.StaffID);
+						update.Parameters.AddWithValue("@IsPresent", isPresent);
+						update.Parameters.AddWithValue("@Remarks", (object?)remarks ?? DBNull.Value);
+						update.ExecuteNonQuery();
+					}
+					else
+					{
+						using var insert = new SqlCommand("dbo.PR_MOM_MeetingMember_Insert", connection)
+						{
+							CommandType = CommandType.StoredProcedure
+						};
+						insert.Parameters.AddWithValue("@MeetingID", model.MeetingID);
+						insert.Parameters.AddWithValue("@StaffID", staff.StaffID);
+						insert.Parameters.AddWithValue("@IsPresent", isPresent);
+						insert.Parameters.AddWithValue("@Remarks", (object?)remarks ?? DBNull.Value);
+						insert.ExecuteNonQuery();
+					}
+				}
+
+				TempData["SuccessMessage"] = "Attendance saved.";
+			}
+			catch
+			{
+				TempData["ErrorMessage"] = "Failed to save attendance.";
+			}
+
+			return RedirectToAction(nameof(Fill), new { meetingId = model.MeetingID });
+		}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -166,17 +314,84 @@ namespace MOM_Project.Controllers
 
             connection.Open();
             using var reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                meetings.Add(new Meeting
-                {
-                    MeetingID = reader.GetInt32(reader.GetOrdinal("MeetingID")),
-                    MeetingDate = reader.GetDateTime(reader.GetOrdinal("MeetingDate"))
-                });
-            }
+
+			var meetingIds = new List<int>();
+			var hasDescription = false;
+			var descriptionOrdinal = -1;
+
+			if (reader.FieldCount > 0)
+			{
+				for (var i = 0; i < reader.FieldCount; i++)
+				{
+					if (string.Equals(reader.GetName(i), "MeetingDescription", StringComparison.OrdinalIgnoreCase))
+					{
+						hasDescription = true;
+						descriptionOrdinal = i;
+						break;
+					}
+				}
+			}
+
+			while (reader.Read())
+			{
+				var id = reader.GetInt32(reader.GetOrdinal("MeetingID"));
+				meetingIds.Add(id);
+
+				if (hasDescription)
+				{
+					meetings.Add(new Meeting
+					{
+						MeetingID = id,
+						MeetingDate = reader.GetDateTime(reader.GetOrdinal("MeetingDate")),
+						MeetingDescription = reader.IsDBNull(descriptionOrdinal) ? string.Empty : reader.GetString(descriptionOrdinal)
+					});
+				}
+			}
+			reader.Close();
+
+			if (!hasDescription)
+			{
+				foreach (var id in meetingIds)
+				{
+					var meeting = GetMeetingById(connection, id);
+					if (meeting != null)
+					{
+						meetings.Add(meeting);
+					}
+				}
+			}
 
             return meetings;
         }
+
+		private static Meeting? GetMeetingById(SqlConnection connection, int meetingId)
+		{
+			try
+			{
+				using var command = new SqlCommand("dbo.PR_MOM_Meetings_SelectByPK", connection)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				command.Parameters.AddWithValue("@MeetingID", meetingId);
+				using var reader = command.ExecuteReader();
+				if (!reader.Read())
+				{
+					return null;
+				}
+
+				return new Meeting
+				{
+					MeetingID = reader.GetInt32(reader.GetOrdinal("MeetingID")),
+					MeetingDate = reader.GetDateTime(reader.GetOrdinal("MeetingDate")),
+					MeetingDescription = reader.IsDBNull(reader.GetOrdinal("MeetingDescription")) ? string.Empty : reader.GetString(reader.GetOrdinal("MeetingDescription"))
+				};
+			}
+			catch
+			{
+				return null;
+			}
+		}
 
         private List<Staff> LoadStaff()
         {
@@ -202,6 +417,102 @@ namespace MOM_Project.Controllers
 
             return staffMembers;
         }
+
+		private static Meeting? GetMeetingDetailsById(SqlConnection connection, int meetingId)
+		{
+			try
+			{
+				using var command = new SqlCommand("dbo.PR_MOM_Meetings_SelectByPK", connection)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				command.Parameters.AddWithValue("@MeetingID", meetingId);
+				using var reader = command.ExecuteReader();
+				if (!reader.Read())
+				{
+					return null;
+				}
+
+				return new Meeting
+				{
+					MeetingID = reader.GetInt32(reader.GetOrdinal("MeetingID")),
+					MeetingDate = reader.GetDateTime(reader.GetOrdinal("MeetingDate")),
+					MeetingTypeID = reader.GetInt32(reader.GetOrdinal("MeetingTypeID")),
+					DepartmentID = reader.GetInt32(reader.GetOrdinal("DepartmentID")),
+					MeetingVenueID = reader.GetInt32(reader.GetOrdinal("MeetingVenueID")),
+					MeetingDescription = reader.IsDBNull(reader.GetOrdinal("MeetingDescription")) ? string.Empty : reader.GetString(reader.GetOrdinal("MeetingDescription")),
+					DocumentPath = reader.IsDBNull(reader.GetOrdinal("DocumentPath")) ? string.Empty : reader.GetString(reader.GetOrdinal("DocumentPath")),
+					IsCancelled = reader.IsDBNull(reader.GetOrdinal("IsCancelled")) ? null : reader.GetBoolean(reader.GetOrdinal("IsCancelled")),
+					CancellationDateTime = reader.IsDBNull(reader.GetOrdinal("CancellationDateTime")) ? null : reader.GetDateTime(reader.GetOrdinal("CancellationDateTime")),
+					CancellationReason = reader.IsDBNull(reader.GetOrdinal("CancellationReason")) ? string.Empty : reader.GetString(reader.GetOrdinal("CancellationReason")),
+					Created = reader.IsDBNull(reader.GetOrdinal("Created")) ? default : reader.GetDateTime(reader.GetOrdinal("Created")),
+					Modified = reader.IsDBNull(reader.GetOrdinal("Modified")) ? default : reader.GetDateTime(reader.GetOrdinal("Modified"))
+				};
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		private static List<MeetingMember> LoadMeetingMembersByMeetingId(SqlConnection connection, int meetingId)
+		{
+			var list = new List<MeetingMember>();
+
+			// Try common table names (DB schema can vary across scripts).
+			string[] tableNames = ["dbo.MOM_MeetingMember", "dbo.MOM_MeetingMembers", "dbo.MOM_MeetingMemberDetails"];
+			foreach (var table in tableNames)
+			{
+				try
+				{
+					using var command = new SqlCommand($@"SELECT MeetingMemberID, MeetingID, StaffID, IsPresent, Remarks
+FROM {table}
+WHERE MeetingID = @MeetingID", connection);
+					command.Parameters.AddWithValue("@MeetingID", meetingId);
+					using var reader = command.ExecuteReader();
+					while (reader.Read())
+					{
+						list.Add(new MeetingMember
+						{
+							MeetingMemberID = reader.GetInt32(reader.GetOrdinal("MeetingMemberID")),
+							MeetingID = reader.GetInt32(reader.GetOrdinal("MeetingID")),
+							StaffID = reader.GetInt32(reader.GetOrdinal("StaffID")),
+							IsPresent = reader.GetBoolean(reader.GetOrdinal("IsPresent")),
+							Remarks = reader.IsDBNull(reader.GetOrdinal("Remarks")) ? null : reader.GetString(reader.GetOrdinal("Remarks"))
+						});
+					}
+					reader.Close();
+					return list;
+				}
+				catch
+				{
+					// try next possible table name
+				}
+			}
+
+			return list;
+		}
+
+		private static List<Department> LoadDepartments(SqlConnection connection)
+		{
+			var list = new List<Department>();
+			using var command = new SqlCommand("dbo.PR_MOM_Department_SelectAll", connection)
+			{
+				CommandType = CommandType.StoredProcedure
+			};
+			using var reader = command.ExecuteReader();
+			while (reader.Read())
+			{
+				list.Add(new Department
+				{
+					DepartmentID = reader.GetInt32(reader.GetOrdinal("DepartmentID")),
+					DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName"))
+				});
+			}
+			reader.Close();
+			return list;
+		}
 
         private static int GetStaffIdByName(IEnumerable<Staff> staff, string staffName)
             => staff.FirstOrDefault(s => s.StaffName == staffName)?.StaffID ?? 0;

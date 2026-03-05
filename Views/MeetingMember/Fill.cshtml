@@ -1,0 +1,142 @@
+@model MOM_Project.Models.FillAttendanceViewModel
+
+@{
+	ViewData["Title"] = "Fill Attendance";
+}
+
+<div class="pagetitle">
+	<h1>Fill Attendance</h1>
+	<nav>
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+			<li class="breadcrumb-item">Meeting Management</li>
+			<li class="breadcrumb-item"><a asp-controller="MeetingMember" asp-action="Index">Attendance</a></li>
+			<li class="breadcrumb-item active">Fill Attendance</li>
+		</ol>
+	</nav>
+</div>
+
+<section class="section">
+	@if (TempData["ErrorMessage"] is string errorMessage && !string.IsNullOrWhiteSpace(errorMessage))
+	{
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			@errorMessage
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+	}
+	@if (TempData["SuccessMessage"] is string successMessage && !string.IsNullOrWhiteSpace(successMessage))
+	{
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+			@successMessage
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+	}
+
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title mb-3">Select Meeting</h5>
+
+			<form method="get" asp-action="Fill" class="row g-3 align-items-end">
+				<div class="col-12 col-md-8">
+					<label class="form-label">Meeting</label>
+					<select class="form-select" name="meetingId" required>
+						<option value="">Select meeting</option>
+						@if (Model.Meetings != null)
+						{
+							foreach (var m in Model.Meetings)
+							{
+								var text = $"{m.MeetingDescription} ({m.MeetingDate:dd/MM/yyyy HH:mm})";
+								if (Model.SelectedMeetingId.HasValue && m.MeetingID == Model.SelectedMeetingId.Value)
+								{
+									<option value="@m.MeetingID" selected>@text</option>
+								}
+								else
+								{
+									<option value="@m.MeetingID">@text</option>
+								}
+							}
+						}
+					</select>
+				</div>
+				<div class="col-12 col-md-4">
+					<button type="submit" class="btn btn-primary w-100">
+						<i class="bi bi-search me-1"></i>Load
+					</button>
+				</div>
+			</form>
+
+			@if (Model.Meeting != null)
+			{
+				<hr />
+				<div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+					<div>
+						<div class="fw-bold">@Model.Meeting.MeetingDescription</div>
+						<div class="text-muted small">@Model.Meeting.MeetingDate.ToString("dd MMM yyyy, hh:mm tt")</div>
+					</div>
+					@if (Model.Meeting.IsCancelled == true)
+					{
+						<span class="badge bg-danger">Cancelled</span>
+					}
+				</div>
+
+				@if (Model.Meeting.IsCancelled == true)
+				{
+					<div class="alert alert-warning mt-3 mb-0">Attendance is disabled for cancelled meetings.</div>
+				}
+				else
+				{
+					<form method="post" asp-action="Fill" class="mt-3">
+						@Html.AntiForgeryToken()
+						<input type="hidden" name="MeetingID" value="@Model.Meeting.MeetingID" />
+
+						<div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+							<div class="text-muted small">
+								Tick staff who are <span class="fw-bold">Present</span>. Unticked will be saved as <span class="fw-bold">Absent</span>.
+							</div>
+							<div>
+								<button type="submit" class="btn btn-success btn-sm">
+									<i class="bi bi-check2-circle me-1"></i>Save Attendance
+								</button>
+							</div>
+						</div>
+
+						<div class="table-responsive">
+							<table class="table table-hover datatable">
+								<thead>
+									<tr>
+										<th style="width: 60px;" class="text-center">Present</th>
+										<th>Staff</th>
+										<th>Department</th>
+										<th>Current Remark</th>
+									</tr>
+								</thead>
+								<tbody>
+									@if (Model.StaffRows != null && Model.StaffRows.Count > 0)
+									{
+										foreach (var row in Model.StaffRows)
+										{
+											<tr>
+												<td class="text-center">
+													<input class="form-check-input" type="checkbox" name="PresentStaffIds" value="@row.StaffID" @(row.IsPresent ? "checked" : null) />
+												</td>
+												<td>@row.StaffName</td>
+												<td>@row.DepartmentName</td>
+												<td>@(row.Remarks ?? "-")</td>
+											</tr>
+										}
+									}
+									else
+									{
+										<tr>
+											<td colspan="4" class="text-center text-muted">No staff found for this meeting.</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</form>
+				}
+			}
+		</div>
+	</div>
+</section>
