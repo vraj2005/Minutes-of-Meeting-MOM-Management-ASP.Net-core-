@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\views\\meetingmember\\fill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:views\\meetingmember\\fill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\controllers\\departmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:controllers\\departmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\controllers\\meetingmembercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -13,6 +13,18 @@
     {
       "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\models\\fillattendanceviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:models\\fillattendanceviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\views\\meetings\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:views\\meetings\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\views\\meetingmember\\fill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:views\\meetingmember\\fill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -27,10 +39,6 @@
       "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:infrastructure\\databaseseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -41,10 +49,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\controllers\\meetingscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:controllers\\meetingscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\controllers\\departmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:controllers\\departmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\controllers\\meetingvenuecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -61,10 +65,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\views\\staff\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:views\\staff\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\views\\meetings\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:views\\meetings\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\models\\meetingmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -97,6 +97,46 @@
     {
       "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\models\\dashboardviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:models\\dashboardviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\models\\usermodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:models\\usermodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\infrastructure\\checkaccessattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:infrastructure\\checkaccessattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\infrastructure\\commonvariable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:infrastructure\\commonvariable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\views\\shared\\_layout_login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:views\\shared\\_layout_login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\views\\user\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:views\\user\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\views\\user\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:views\\user\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\wwwroot\\assets\\css\\mom-theme.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:wwwroot\\assets\\css\\mom-theme.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|d:\\project\\minites of meeting(asp.net)\\mom_project\\wwwroot\\assets\\js\\mom-theme.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{0BD0C085-B158-68CC-9B5D-7B2793C7599F}|MOM_Project.csproj|solutionrelative:wwwroot\\assets\\js\\mom-theme.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -106,31 +146,162 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ErrorViewModel.cs",
-              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Models\\ErrorViewModel.cs",
-              "RelativeDocumentMoniker": "Models\\ErrorViewModel.cs",
-              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Models\\ErrorViewModel.cs",
-              "RelativeToolTip": "Models\\ErrorViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 33,
+              "Title": "mom-theme.js",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\wwwroot\\assets\\js\\mom-theme.js",
+              "RelativeDocumentMoniker": "wwwroot\\assets\\js\\mom-theme.js",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\wwwroot\\assets\\js\\mom-theme.js",
+              "RelativeToolTip": "wwwroot\\assets\\js\\mom-theme.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-03-13T15:38:11.323Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "mom-theme.css",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\wwwroot\\assets\\css\\mom-theme.css",
+              "RelativeDocumentMoniker": "wwwroot\\assets\\css\\mom-theme.css",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\wwwroot\\assets\\css\\mom-theme.css",
+              "RelativeToolTip": "wwwroot\\assets\\css\\mom-theme.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAH8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-03-13T15:38:03.685Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "UserModels.cs",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Models\\UserModels.cs",
+              "RelativeDocumentMoniker": "Models\\UserModels.cs",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Models\\UserModels.cs",
+              "RelativeToolTip": "Models\\UserModels.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T05:51:13.875Z"
+              "WhenOpened": "2026-03-13T15:22:40.562Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MeetingMemberController.cs",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\MeetingMemberController.cs",
+              "RelativeDocumentMoniker": "Controllers\\MeetingMemberController.cs",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\MeetingMemberController.cs",
+              "RelativeToolTip": "Controllers\\MeetingMemberController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-25T07:31:25.746Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Fill.cshtml",
-              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\MeetingMember\\Fill.cshtml",
-              "RelativeDocumentMoniker": "Views\\MeetingMember\\Fill.cshtml",
-              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\MeetingMember\\Fill.cshtml",
-              "RelativeToolTip": "Views\\MeetingMember\\Fill.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAI4AAAAAAAAAAAAAAA==",
+              "Title": "DepartmentController.cs",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\DepartmentController.cs",
+              "RelativeDocumentMoniker": "Controllers\\DepartmentController.cs",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\DepartmentController.cs",
+              "RelativeToolTip": "Controllers\\DepartmentController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGIAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T14:31:34.319Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "CheckAccessAttribute.cs",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Infrastructure\\CheckAccessAttribute.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\CheckAccessAttribute.cs",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Infrastructure\\CheckAccessAttribute.cs",
+              "RelativeToolTip": "Infrastructure\\CheckAccessAttribute.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T15:22:45.507Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "CommonVariable.cs",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Infrastructure\\CommonVariable.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\CommonVariable.cs",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Infrastructure\\CommonVariable.cs",
+              "RelativeToolTip": "Infrastructure\\CommonVariable.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T15:22:50.365Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "Controllers\\UserController.cs",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\UserController.cs",
+              "RelativeToolTip": "Controllers\\UserController.cs",
+              "ViewState": "AgIAAEkAAAAAAAAAAIBJwIIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T15:23:04.555Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAB0AAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-05T05:38:28.811Z",
+              "WhenOpened": "2026-03-13T15:24:18.504Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\User\\Register.cshtml",
+              "RelativeDocumentMoniker": "Views\\User\\Register.cshtml",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\User\\Register.cshtml",
+              "RelativeToolTip": "Views\\User\\Register.cshtml",
+              "ViewState": "AgIAAAoAAAAAAAAAAIBJwF8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-13T15:23:50.515Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\User\\Login.cshtml",
+              "RelativeDocumentMoniker": "Views\\User\\Login.cshtml",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\User\\Login.cshtml",
+              "RelativeToolTip": "Views\\User\\Login.cshtml",
+              "ViewState": "AgIAAAoAAAAAAAAAAIBJwFYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-13T15:23:25.726Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "_Layout_Login.cshtml",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Shared\\_Layout_Login.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout_Login.cshtml",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Shared\\_Layout_Login.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout_Login.cshtml",
+              "ViewState": "AgIAABMAAAAAAAAAAIBJwCwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-13T15:23:12.34Z",
               "EditorCaption": ""
             },
             {
@@ -141,25 +312,25 @@
               "RelativeDocumentMoniker": "Models\\FillAttendanceViewModel.cs",
               "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Models\\FillAttendanceViewModel.cs",
               "RelativeToolTip": "Models\\FillAttendanceViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-05T05:37:16.749Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MeetingMemberController.cs",
-              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\MeetingMemberController.cs",
-              "RelativeDocumentMoniker": "Controllers\\MeetingMemberController.cs",
-              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\MeetingMemberController.cs",
-              "RelativeToolTip": "Controllers\\MeetingMemberController.cs",
-              "ViewState": "AgIAAAoBAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-25T07:31:25.746Z"
+              "DocumentIndex": 5,
+              "Title": "Fill.cshtml",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\MeetingMember\\Fill.cshtml",
+              "RelativeDocumentMoniker": "Views\\MeetingMember\\Fill.cshtml",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\MeetingMember\\Fill.cshtml",
+              "RelativeToolTip": "Views\\MeetingMember\\Fill.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-05T05:38:28.811Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\MeetingMember\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\MeetingMember\\Index.cshtml",
@@ -171,7 +342,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "DatabaseSeeder.cs",
               "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Infrastructure\\DatabaseSeeder.cs",
               "RelativeDocumentMoniker": "Infrastructure\\DatabaseSeeder.cs",
@@ -183,27 +354,40 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 3,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
               "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Home\\Index.cshtml",
               "RelativeToolTip": "Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAOoAAAAAAAAAAIBJwAUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-26T02:38:31.226Z"
+              "WhenOpened": "2026-02-26T02:38:31.226Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "DepartmentController.cs",
-              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\DepartmentController.cs",
-              "RelativeDocumentMoniker": "Controllers\\DepartmentController.cs",
-              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\DepartmentController.cs",
-              "RelativeToolTip": "Controllers\\DepartmentController.cs",
-              "ViewState": "AgIAAEwAAAAAAAAAAAAkwGAAAAAYAAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Meetings\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Meetings\\Index.cshtml",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Meetings\\Index.cshtml",
+              "RelativeToolTip": "Views\\Meetings\\Index.cshtml",
+              "ViewState": "AgIAAIEBAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-15T14:45:54.813Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ErrorViewModel.cs",
+              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Models\\ErrorViewModel.cs",
+              "RelativeDocumentMoniker": "Models\\ErrorViewModel.cs",
+              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Models\\ErrorViewModel.cs",
+              "RelativeToolTip": "Models\\ErrorViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T14:31:34.319Z"
+              "WhenOpened": "2026-03-05T05:51:13.875Z"
             },
             {
               "$type": "Document",
@@ -213,9 +397,10 @@
               "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
               "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\HomeController.cs",
               "RelativeToolTip": "Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAEAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAQAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-26T02:36:46.421Z"
+              "WhenOpened": "2026-02-26T02:36:46.421Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -231,7 +416,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -243,31 +428,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAQwBcAAAAEAAAAAAAAAA==",
+              "ViewState": "AgIAADUAAAAAAAAAAIBJwCAAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-25T05:10:18.024Z"
+              "WhenOpened": "2026-02-25T05:10:18.024Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "MeetingsController.cs",
               "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\MeetingsController.cs",
               "RelativeDocumentMoniker": "Controllers\\MeetingsController.cs",
               "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\MeetingsController.cs",
               "RelativeToolTip": "Controllers\\MeetingsController.cs",
-              "ViewState": "AgIAALwAAAAAAAAAAIBJwBgAAAAPAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAIBJwBoAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T14:44:44.48Z"
+              "WhenOpened": "2026-02-15T14:44:44.48Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Staff\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Staff\\Index.cshtml",
@@ -285,21 +472,23 @@
               "RelativeDocumentMoniker": "Controllers\\MeetingTypeController.cs",
               "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\MeetingTypeController.cs",
               "RelativeToolTip": "Controllers\\MeetingTypeController.cs",
-              "ViewState": "AgIAAKkAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-17T03:36:20.373Z"
+              "WhenOpened": "2026-02-17T03:36:20.373Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "MeetingVenueController.cs",
               "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\MeetingVenueController.cs",
               "RelativeDocumentMoniker": "Controllers\\MeetingVenueController.cs",
               "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\MeetingVenueController.cs",
               "RelativeToolTip": "Controllers\\MeetingVenueController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAIAAAAAAAAAAABRwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-17T03:36:33.388Z"
+              "WhenOpened": "2026-02-17T03:36:33.388Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -315,7 +504,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "Delete.cshtml",
               "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Staff\\Delete.cshtml",
               "RelativeDocumentMoniker": "Views\\Staff\\Delete.cshtml",
@@ -363,15 +552,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "StaffController.cs",
               "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\StaffController.cs",
               "RelativeDocumentMoniker": "Controllers\\StaffController.cs",
               "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Controllers\\StaffController.cs",
               "RelativeToolTip": "Controllers\\StaffController.cs",
-              "ViewState": "AgIAAJ8AAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T14:34:50.972Z"
+              "WhenOpened": "2026-02-15T14:34:50.972Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -384,18 +574,6 @@
               "ViewState": "AgIAAAkAAAAAAAAAAABYwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-15T14:46:09.041Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Meetings\\Index.cshtml",
-              "RelativeDocumentMoniker": "Views\\Meetings\\Index.cshtml",
-              "ToolTip": "D:\\project\\Minites of Meeting(ASP.Net)\\MOM_Project\\Views\\Meetings\\Index.cshtml",
-              "RelativeToolTip": "Views\\Meetings\\Index.cshtml",
-              "ViewState": "AgIAAJABAAAAAAAAAIBJwA8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-15T14:45:54.813Z"
             }
           ]
         }

@@ -1,0 +1,126 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using MOM_Project.Models;
+using System.Data;
+
+namespace MOM_Project.Controllers
+{
+	public class UserController : Controller
+	{
+		private readonly string _connectionString;
+
+		public UserController(IConfiguration configuration)
+		{
+			_connectionString = configuration.GetConnectionString("MOM_DB")
+				?? throw new InvalidOperationException("Connection string 'MOM_DB' not found.");
+		}
+
+		[HttpGet]
+		public IActionResult Login()
+		{
+			if (!string.IsNullOrWhiteSpace(HttpContext.Session.GetString("UserID")))
+			{
+				return RedirectToAction("Index", "Home");
+			}
+
+			return View(new UserLoginModel());
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult Login(UserLoginModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+
+			try
+			{
+				using var connection = new SqlConnection(_connectionString);
+				using var command = new SqlCommand("dbo.PR_User_Login", connection)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				command.Parameters.AddWithValue("@UserName", model.UserName);
+				command.Parameters.AddWithValue("@Password", model.Password);
+
+				connection.Open();
+				using var reader = command.ExecuteReader();
+				if (reader.Read())
+				{
+					HttpContext.Session.SetString("UserID", reader["UserID"].ToString() ?? string.Empty);
+					HttpContext.Session.SetString("UserName", reader["UserName"].ToString() ?? string.Empty);
+					HttpContext.Session.SetString("Email", reader["Email"].ToString() ?? string.Empty);
+					return RedirectToAction("Index", "Home");
+				}
+
+				TempData["ErrorMessage"] = "Invalid username or password.";
+				return View(model);
+			}
+			catch (Exception ex)
+			{
+				TempData["ErrorMessage"] = ex.Message;
+				return View(model);
+			}
+		}
+
+		[HttpGet]
+		public IActionResult Register()
+		{
+			return View(new UserRegisterModel());
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult Register(UserRegisterModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+
+			try
+			{
+				using var connection = new SqlConnection(_connectionString);
+				using var command = new SqlCommand("dbo.PR_User_Register", connection)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				command.Parameters.AddWithValue("@UserName", model.UserName);
+				command.Parameters.AddWithValue("@MobileNo", model.MobileNo);
+				command.Parameters.AddWithValue("@Email", model.Email);
+				command.Parameters.AddWithValue("@Password", model.Password);
+				command.Parameters.AddWithValue("@Address", (object?)model.Address ?? DBNull.Value);
+
+				connection.Open();
+				var result = command.ExecuteScalar();
+				var message = result?.ToString();
+
+				if (!string.IsNullOrWhiteSpace(message) && message.Contains("already", StringComparison.OrdinalIgnoreCase))
+				{
+					TempData["ErrorMessage"] = message;
+					return View(model);
+				}
+
+				TempData["SuccessMessage"] = string.IsNullOrWhiteSpace(message) ? "User registered successfully." : message;
+				return RedirectToAction(nameof(Login));
+			}
+			catch (Exception ex)
+			{
+				TempData["ErrorMessage"] = ex.Message;
+				return View(model);
+			}
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult Logout()
+		{
+			HttpContext.Session.Clear();
+			return RedirectToAction(nameof(Login));
+		}
+	}
+}

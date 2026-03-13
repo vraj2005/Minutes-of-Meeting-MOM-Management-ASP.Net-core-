@@ -1,0 +1,242 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using MOM_Project.Models;
+using System.Data;
+
+namespace MOM_Project.Controllers
+{
+    public class MeetingVenueController : Controller
+    {
+        private readonly string _connectionString;
+
+        public MeetingVenueController(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("MOM_DB")
+                ?? throw new InvalidOperationException("Connection string 'MOM_DB' not found.");
+        }
+
+        public IActionResult Index()
+        {
+            var venues = new List<MeetingVenue>();
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("PR_MOM_MeetingVenue_SelectAll", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                connection.Open();
+                using var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    venues.Add(new MeetingVenue
+                    {
+                        MeetingVenueID = reader.GetInt32(reader.GetOrdinal("MeetingVenueID")),
+                        MeetingVenueName = reader.GetString(reader.GetOrdinal("MeetingVenueName")),
+                        Remarks = reader.IsDBNull(reader.GetOrdinal("Remarks")) ? null : reader.GetString(reader.GetOrdinal("Remarks")),
+                        Created = reader.GetDateTime(reader.GetOrdinal("Created")),
+                        Modified = reader.GetDateTime(reader.GetOrdinal("Modified"))
+                    });
+                }
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to load meeting venues.");
+            }
+
+            return View(venues);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(MeetingVenue meetingVenue)
+        {
+            if (string.IsNullOrWhiteSpace(meetingVenue.MeetingVenueName))
+            {
+                ModelState.AddModelError(nameof(meetingVenue.MeetingVenueName), "Meeting venue name is required.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(meetingVenue);
+            }
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("PR_MOM_MeetingVenue_Insert", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingVenueName", meetingVenue.MeetingVenueName.Trim());
+                command.Parameters.AddWithValue("@Remarks", (object?)meetingVenue.Remarks ?? DBNull.Value);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to create meeting venue.");
+                return View(meetingVenue);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Edit(int id)
+        {
+            if (id <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var venue = GetMeetingVenueById(id);
+            if (venue is null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(venue);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(MeetingVenue meetingVenue)
+        {
+            if (meetingVenue.MeetingVenueID <= 0 || string.IsNullOrWhiteSpace(meetingVenue.MeetingVenueName))
+            {
+                if (string.IsNullOrWhiteSpace(meetingVenue.MeetingVenueName))
+                {
+                    ModelState.AddModelError(nameof(meetingVenue.MeetingVenueName), "Meeting venue name is required.");
+                }
+
+                return View(meetingVenue);
+            }
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("PR_MOM_MeetingVenue_UpdateByPK", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingVenueID", meetingVenue.MeetingVenueID);
+                command.Parameters.AddWithValue("@MeetingVenueName", meetingVenue.MeetingVenueName.Trim());
+                command.Parameters.AddWithValue("@Remarks", (object?)meetingVenue.Remarks ?? DBNull.Value);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to update meeting venue.");
+                return View(meetingVenue);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Delete(int id)
+        {
+            if (id <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var venue = GetMeetingVenueById(id);
+            if (venue is null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(venue);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int meetingVenueId)
+        {
+            if (meetingVenueId <= 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("PR_MOM_MeetingVenue_DeleteByPK", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingVenueID", meetingVenueId);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch (SqlException ex) when (ex.Number is 547)
+            {
+                TempData["ErrorMessage"] = "Cannot delete this meeting venue because it is being used in other records (e.g., Meetings). Remove dependent records first.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Failed to delete meeting venue.");
+                var venue = GetMeetingVenueById(meetingVenueId);
+                if (venue is null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View("Delete", venue);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private MeetingVenue? GetMeetingVenueById(int meetingVenueId)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("PR_MOM_MeetingVenue_SelectByPK", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("@MeetingVenueID", meetingVenueId);
+
+                connection.Open();
+                using var reader = command.ExecuteReader();
+
+                if (!reader.Read())
+                {
+                    return null;
+                }
+
+                return new MeetingVenue
+                {
+                    MeetingVenueID = reader.GetInt32(reader.GetOrdinal("MeetingVenueID")),
+                    MeetingVenueName = reader.GetString(reader.GetOrdinal("MeetingVenueName")),
+                    Remarks = reader.IsDBNull(reader.GetOrdinal("Remarks")) ? null : reader.GetString(reader.GetOrdinal("Remarks")),
+                    Created = reader.GetDateTime(reader.GetOrdinal("Created")),
+                    Modified = reader.GetDateTime(reader.GetOrdinal("Modified"))
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+    }
+}

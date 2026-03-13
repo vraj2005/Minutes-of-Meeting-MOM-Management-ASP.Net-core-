@@ -7,6 +7,15 @@ namespace MOM_Project
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+         builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSession(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.IdleTimeout = TimeSpan.FromHours(8);
+            });
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
@@ -28,9 +37,22 @@ namespace MOM_Project
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+           app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseSession();
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.Use(async (context, next) =>
+            {
+                // Prevent browser caching so the Back button can't show restricted pages after logout.
+                context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+                context.Response.Headers.Pragma = "no-cache";
+                context.Response.Headers.Expires = "0";
+                await next();
+            });
 
             app.MapStaticAssets();
             app.MapControllerRoute(

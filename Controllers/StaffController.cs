@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using MOM_Project.Models;
 using System.Data;
+using MOM_Project.Infrastructure;
 
 namespace MOM_Project.Controllers
 {
+   [CheckAccess]
     public class StaffController : Controller
     {
         private readonly string _connectionString;

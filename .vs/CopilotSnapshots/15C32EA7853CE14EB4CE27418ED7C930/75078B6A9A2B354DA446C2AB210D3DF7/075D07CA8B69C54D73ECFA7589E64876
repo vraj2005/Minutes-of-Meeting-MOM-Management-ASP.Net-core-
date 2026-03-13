@@ -1,0 +1,310 @@
+﻿@model MOM_Project.Models.DashboardViewModel
+
+@{
+	ViewData["Title"] = "Dashboard";
+}
+
+<div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section dashboard">
+    <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-8">
+            <div class="row">
+
+                <!-- Meetings This Month -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card sales-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Meetings <span>| This Month</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-calendar-event"></i>
+                                </div>
+                                <div class="ps-3">
+								<h6>@Model.TotalMeetingsThisMonth</h6>
+								<span class="text-muted small pt-2 ps-1">scheduled</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+				<!-- Cancelled Meetings Card -->
+				<div class="col-xxl-4 col-md-6">
+					<div class="card info-card customers-card">
+						<div class="card-body">
+							<h5 class="card-title">Cancelled <span>| This Month</span></h5>
+							<div class="d-flex align-items-center">
+								<div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+									<i class="bi bi-x-circle"></i>
+								</div>
+								<div class="ps-3">
+									<h6>@Model.TotalMeetingsCancelledThisMonth</h6>
+									<span class="text-muted small pt-2 ps-1">meetings</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+                <!-- Staff Members Card -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card revenue-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Staff Members <span>| Total</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <div class="ps-3">
+								<h6>@Model.TotalStaff</h6>
+								<span class="text-muted small pt-2 ps-1">members</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End Staff Members Card -->
+
+                <!-- Departments Card -->
+                <div class="col-xxl-4 col-xl-12">
+                    <div class="card info-card customers-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Departments <span>| Active</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-building"></i>
+                                </div>
+                                <div class="ps-3">
+								<h6>@Model.TotalDepartments</h6>
+								<span class="text-muted small pt-2 ps-1">departments</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End Departments Card -->
+
+                <!-- Upcoming Meetings -->
+                <div class="col-12">
+                    <div class="card recent-sales overflow-auto">
+                        <div class="card-body">
+                            <h5 class="card-title">Upcoming Meetings <span>| This Week</span></h5>
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Meeting Title</th>
+                                        <th scope="col">Date & Time</th>
+                                        <th scope="col">Venue</th>
+                                        <th scope="col">Department</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+								@if (Model.UpcomingMeetings != null && Model.UpcomingMeetings.Count > 0)
+								{
+									var index = 0;
+									foreach (var m in Model.UpcomingMeetings)
+									{
+										index++;
+										<tr>
+											<th scope="row">@index</th>
+											<td>@(string.IsNullOrWhiteSpace(m.MeetingDescription) ? "-" : m.MeetingDescription)</td>
+											<td>@m.MeetingDate.ToString("dd MMM yyyy, hh:mm tt")</td>
+											<td>@(m.VenueName ?? "-")</td>
+											<td>@(m.DepartmentName ?? "-")</td>
+											<td>
+												@if (m.IsCancelled)
+												{
+													<span class="badge bg-danger">Cancelled</span>
+												}
+												else
+												{
+													<span class="badge bg-success">Scheduled</span>
+												}
+											</td>
+										</tr>
+									}
+								}
+								else
+								{
+									<tr>
+										<td colspan="6" class="text-center text-muted">No upcoming meetings in the next 7 days.</td>
+									</tr>
+								}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div><!-- End Upcoming Meetings -->
+
+                <!-- Meeting Statistics Chart -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Meeting Statistics <span>| Last 6 Months</span></h5>
+						<div id="meetingChart"
+								 data-categories='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartCategories))'
+								 data-held='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartMeetingsHeld))'
+								 data-cancelled='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartMeetingsCancelled))'></div>
+                        </div>
+                    </div>
+                </div><!-- End Meeting Statistics Chart -->
+
+            </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+
+            <!-- Quick Actions Card -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Actions</h5>
+                    <div class="d-grid gap-2">
+                        <a href="/Meetings/Index" class="btn btn-primary">
+                            <i class="bi bi-calendar-plus me-2"></i>Schedule New Meeting
+                        </a>
+                        <a href="/Staff/Index" class="btn btn-success">
+                            <i class="bi bi-person-plus me-2"></i>Add Staff Member
+                        </a>
+                        <a href="/MeetingMember/Index" class="btn btn-info">
+                            <i class="bi bi-clipboard-check me-2"></i>Mark Attendance
+                        </a>
+                        <a href="/Department/Index" class="btn btn-warning">
+                            <i class="bi bi-building me-2"></i>Manage Departments
+                        </a>
+                    </div>
+                </div>
+            </div><!-- End Quick Actions -->
+
+            <!-- Recent Activity -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Recent Activity <span>| Today</span></h5>
+                    <div class="activity">
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">10 min</div>
+                            <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                            <div class="activity-content">
+                                New meeting <a href="#" class="fw-bold text-dark">Q4 Review</a> scheduled
+                            </div>
+                        </div>
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">32 min</div>
+                            <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
+                            <div class="activity-content">
+                                Staff member <a href="#" class="fw-bold text-dark">John Doe</a> added to meeting
+                            </div>
+                        </div>
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">1 hr</div>
+                            <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
+                            <div class="activity-content">
+                                Meeting attendance marked for <a href="#" class="fw-bold text-dark">Budget Review</a>
+                            </div>
+                        </div>
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">2 hrs</div>
+                            <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
+                            <div class="activity-content">
+                                New department <a href="#" class="fw-bold text-dark">Research & Development</a> created
+                            </div>
+                        </div>
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">4 hrs</div>
+                            <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                            <div class="activity-content">
+                                Meeting <a href="#" class="fw-bold text-dark">Team Sync</a> cancelled
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- End Recent Activity -->
+
+            <!-- Meeting Types Distribution -->
+            <div class="card">
+                <div class="card-body pb-0">
+                    <h5 class="card-title">Meeting Types <span>| Distribution</span></h5>
+                    <div id="meetingTypeChart" style="min-height: 300px;" class="echart"></div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                            echarts.init(document.querySelector("#meetingTypeChart")).setOption({
+                                tooltip: { trigger: 'item' },
+                                legend: { top: '5%', left: 'center' },
+                                series: [{
+                                    name: 'Meeting Types',
+                                    type: 'pie',
+                                    radius: ['40%', '70%'],
+                                    avoidLabelOverlap: false,
+                                    label: { show: false, position: 'center' },
+                                    emphasis: {
+                                        label: { show: true, fontSize: '14', fontWeight: 'bold' }
+                                    },
+                                    labelLine: { show: false },
+                                    data: [
+                                        { value: 35, name: 'Regular Meeting' },
+                                        { value: 25, name: 'Board Meeting' },
+                                        { value: 20, name: 'Project Review' },
+                                        { value: 15, name: 'Training' },
+                                        { value: 5, name: 'Town Hall' }
+                                    ]
+                                }]
+                            });
+                        });
+                    </script>
+                </div>
+            </div><!-- End Meeting Types Distribution -->
+
+            <!-- Department-wise Meetings -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Department Meetings <span>| This Month</span></h5>
+                    <div class="progress-stacked mb-3">
+                        <div class="progress" role="progressbar" style="width: 30%">
+                            <div class="progress-bar bg-primary">HR</div>
+                        </div>
+                        <div class="progress" role="progressbar" style="width: 25%">
+                            <div class="progress-bar bg-success">Finance</div>
+                        </div>
+                        <div class="progress" role="progressbar" style="width: 20%">
+                            <div class="progress-bar bg-info">IT</div>
+                        </div>
+                        <div class="progress" role="progressbar" style="width: 25%">
+                            <div class="progress-bar bg-warning">Ops</div>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Human Resources
+                            <span class="badge bg-primary rounded-pill">8</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Finance
+                            <span class="badge bg-success rounded-pill">6</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            IT Department
+                            <span class="badge bg-info rounded-pill">5</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Operations
+                            <span class="badge bg-warning rounded-pill">5</span>
+                        </li>
+                    </ul>
+                </div>
+            </div><!-- End Department-wise Meetings -->
+
+        </div><!-- End Right side columns -->
+
+    </div>
+</section>
